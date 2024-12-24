@@ -1,4 +1,4 @@
-import { ChevronUp, Home, Settings, User2, Users } from 'lucide-react';
+import { AlignJustify, ChevronUp, Home, Settings, User2, Users } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import {
   Sidebar,
@@ -6,10 +6,10 @@ import {
   SidebarFooter,
   SidebarGroup,
   SidebarGroupContent,
-  SidebarGroupLabel,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  useSidebar,
 } from './ui/sidebar';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from './ui/dropdown-menu';
 
@@ -20,24 +20,33 @@ const items = [
     icon: Home,
   },
   {
+    title: 'Customers',
+    url: '/customers',
+    icon: Users,
+  },
+  {
     title: 'Users',
     url: '/users',
     icon: Users,
   },
   {
-    title: 'Settings',
-    url: '/settings',
+    title: 'Products',
+    url: '/products',
     icon: Settings,
   },
 ];
 
 const AppSidebar = () => {
+  const { open, setOpen } = useSidebar();
   return (
     <Sidebar collapsible='icon'>
       <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel>Lovable Clinic</SidebarGroupLabel>
+          {/* <SidebarGroupLabel className='text-lg font-bold text-black'>Lovable Clinic</SidebarGroupLabel> */}
           <SidebarGroupContent>
+            <SidebarMenuButton onClick={() => setOpen(!open)}>
+              <AlignJustify />
+            </SidebarMenuButton>
             <SidebarMenu>
               {items.map((item) => (
                 <SidebarMenuItem key={item.title}>
