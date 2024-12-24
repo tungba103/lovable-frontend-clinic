@@ -58,19 +58,21 @@ function Customers() {
       </div>
 
       <div className='bg-white rounded-lg border shadow-sm'>
-        <div className='p-6 border-b'>
-          <div className='flex items-center gap-4'>
-            <div className='text-sm font-medium text-muted-foreground'>
-              {customers.length} bệnh nhi
-            </div>
-            <div className='relative flex-1'>
-              <Search className='absolute left-2 top-2.5 h-4 w-4 text-muted-foreground' />
-              <Input
-                placeholder='Tìm kiếm theo tên bệnh nhi, phụ huynh hoặc số điện thoại...'
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className='pl-8'
-              />
+        <div className='p-4 border-b'>
+          <div className='flex items-center justify-between gap-4'>
+            <div className='flex items-center gap-4 flex-1 max-w-md'>
+              <div className='text-sm font-medium text-muted-foreground whitespace-nowrap'>
+                {customers.length} bệnh nhi
+              </div>
+              <div className='relative flex-1'>
+                <Search className='absolute left-2 top-2.5 h-4 w-4 text-muted-foreground' />
+                <Input
+                  placeholder='Tìm kiếm...'
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className='pl-8'
+                />
+              </div>
             </div>
           </div>
         </div>
