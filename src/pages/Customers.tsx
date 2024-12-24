@@ -1,15 +1,8 @@
 import { useState } from 'react';
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { Search } from "lucide-react";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { Search } from 'lucide-react';
 
 interface Customer {
   id: string;
@@ -48,34 +41,35 @@ const sampleCustomers: Customer[] = [
 
 function Customers() {
   const [searchTerm, setSearchTerm] = useState('');
-  const [customers, setCustomers] = useState<Customer[]>(sampleCustomers);
+  const [customers] = useState<Customer[]>(sampleCustomers);
 
-  const filteredCustomers = customers.filter(customer =>
-    customer.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    customer.parentInfo.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    customer.parentPhone.includes(searchTerm)
+  const filteredCustomers = customers.filter(
+    (customer) =>
+      customer.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      customer.parentInfo.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      customer.parentPhone.includes(searchTerm)
   );
 
   return (
-    <div className="container mx-auto py-6">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">Quản lý bệnh nhi</h1>
+    <div className='container mx-auto py-6'>
+      <div className='flex justify-between items-center mb-6'>
+        <h1 className='text-2xl font-bold'>Quản lý bệnh nhi</h1>
         <Button>Thêm bệnh nhi mới</Button>
       </div>
 
-      <div className="flex items-center space-x-2 mb-6">
-        <div className="relative flex-1">
-          <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
+      <div className='flex items-center space-x-2 mb-6'>
+        <div className='relative flex-1'>
+          <Search className='absolute left-2 top-2.5 h-4 w-4 text-muted-foreground' />
           <Input
-            placeholder="Tìm kiếm theo tên bệnh nhi, phụ huynh hoặc số điện thoại..."
+            placeholder='Tìm kiếm theo tên bệnh nhi, phụ huynh hoặc số điện thoại...'
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="pl-8"
+            className='pl-8'
           />
         </div>
       </div>
 
-      <div className="border rounded-lg">
+      <div className='border rounded-lg'>
         <Table>
           <TableHeader>
             <TableRow>
@@ -90,12 +84,12 @@ function Customers() {
           <TableBody>
             {filteredCustomers.map((customer) => (
               <TableRow key={customer.id}>
-                <TableCell className="font-medium">{customer.name}</TableCell>
+                <TableCell className='font-medium'>{customer.name}</TableCell>
                 <TableCell>{customer.gender}</TableCell>
                 <TableCell>{new Date(customer.dateOfBirth).toLocaleDateString('vi-VN')}</TableCell>
                 <TableCell>
                   <div>{customer.parentInfo}</div>
-                  <div className="text-sm text-gray-500">{customer.parentPhone}</div>
+                  <div className='text-sm text-gray-500'>{customer.parentPhone}</div>
                 </TableCell>
                 <TableCell>{customer.address}</TableCell>
                 <TableCell>{new Date(customer.createdAt).toLocaleDateString('vi-VN')}</TableCell>
