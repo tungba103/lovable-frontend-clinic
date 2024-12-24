@@ -41,7 +41,7 @@ const sampleCustomers: Customer[] = [
 
 function Customers() {
   const [searchTerm, setSearchTerm] = useState('');
-  const [customers] = useState<Customer[]>(sampleCustomers);
+  const customers = sampleCustomers;
 
   const filteredCustomers = customers.filter(
     (customer) =>
@@ -57,19 +57,24 @@ function Customers() {
         <Button>Thêm bệnh nhi mới</Button>
       </div>
 
-      <div className='flex items-center space-x-2 mb-6'>
-        <div className='relative flex-1'>
-          <Search className='absolute left-2 top-2.5 h-4 w-4 text-muted-foreground' />
-          <Input
-            placeholder='Tìm kiếm theo tên bệnh nhi, phụ huynh hoặc số điện thoại...'
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className='pl-8'
-          />
+      <div className='bg-white rounded-lg border shadow-sm'>
+        <div className='p-6 border-b'>
+          <div className='flex items-center gap-4'>
+            <div className='text-sm font-medium text-muted-foreground'>
+              {customers.length} bệnh nhi
+            </div>
+            <div className='relative flex-1'>
+              <Search className='absolute left-2 top-2.5 h-4 w-4 text-muted-foreground' />
+              <Input
+                placeholder='Tìm kiếm theo tên bệnh nhi, phụ huynh hoặc số điện thoại...'
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className='pl-8'
+              />
+            </div>
+          </div>
         </div>
-      </div>
 
-      <div className='border rounded-lg'>
         <Table>
           <TableHeader>
             <TableRow>
