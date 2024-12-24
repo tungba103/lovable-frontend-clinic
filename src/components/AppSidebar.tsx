@@ -33,7 +33,7 @@ const items = [
 
 const AppSidebar = () => {
   return (
-    <Sidebar>
+    <Sidebar collapsible='icon'>
       <SidebarContent>
         <SidebarGroup>
           <SidebarGroupLabel>Lovable Clinic</SidebarGroupLabel>
