@@ -1,4 +1,4 @@
-import { AlignJustify, ChevronUp, Home, Settings, User2, Users } from 'lucide-react';
+import { AlignJustify, Home, Settings, Users } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import {
   Sidebar,
@@ -11,7 +11,6 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from './ui/sidebar';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from './ui/dropdown-menu';
 
 const items = [
   {
@@ -22,11 +21,6 @@ const items = [
   {
     title: 'Customers',
     url: '/customers',
-    icon: Users,
-  },
-  {
-    title: 'Users',
-    url: '/users',
     icon: Users,
   },
   {
@@ -65,28 +59,12 @@ const AppSidebar = () => {
       <SidebarFooter>
         <SidebarMenu>
           <SidebarMenuItem>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <SidebarMenuButton>
-                  <User2 /> Username
-                  <ChevronUp className='ml-auto' />
-                </SidebarMenuButton>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent
-                side='top'
-                className='w-[--radix-popper-anchor-width]'
-              >
-                <DropdownMenuItem>
-                  <span>Account</span>
-                </DropdownMenuItem>
-                <DropdownMenuItem>
-                  <span>Billing</span>
-                </DropdownMenuItem>
-                <DropdownMenuItem>
-                  <span>Sign out</span>
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+            <SidebarMenuButton asChild>
+              <Link to='/users'>
+                <Users className='h-4 w-4' />
+                <span>Users and Roles</span>
+              </Link>
+            </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarFooter>
