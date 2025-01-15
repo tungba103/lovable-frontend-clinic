@@ -1,11 +1,18 @@
-import { User } from "../auth";
+import { User } from "./user";
+
+export interface LoginApiRequest {
+  username: string;
+  password: string;
+}
 
 export interface LoginApiResponse {
   result: {
-    accessToken: string;
-    refreshToken: string;
-    user: User;
+      message: string;
+      statusCode: number;
+      result: {
+            accessToken: string;
+            refreshToken: string;
+            user: User;
+          };
   };
-  message: string;
-  status: string;
 }

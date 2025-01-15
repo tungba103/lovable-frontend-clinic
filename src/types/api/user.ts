@@ -1,11 +1,3 @@
-export interface UserResponse {
-  page: number;
-  pageSize: number;
-  totalPage: number;
-  total: number;
-  data: User[];
-}
-
 export interface User {
   id: number;
   username: string;
@@ -14,4 +6,10 @@ export interface User {
   isActive: boolean;
   createdAt: string;
   updatedAt: string;
+  UsersOnRoles: Array<{
+    role: {
+      code: string;
+      name: string;
+    };
+  }>;
 }

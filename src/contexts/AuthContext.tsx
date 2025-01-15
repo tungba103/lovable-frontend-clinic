@@ -1,19 +1,19 @@
 import React, { createContext, useState, useEffect, useCallback, useMemo } from 'react';
-import { User } from '@/types/auth';
 import { useQueryClient } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { useToast } from '@/hooks/use-toast';
 import { login } from '@/services/api';
 import token from '@/utils/token';
+import { User } from '@/types/api/user';
 
 interface IAuthContext {
   isAuthenticated: boolean | null;
   me: User | null;
   loginWithUsername: (
     data: { username: string; password: string },
-    onSuccess?: () => void,
-    onError?: (error: AxiosError) => void
+    onSuccess: () => void,
+    onError: (error: AxiosError) => void
   ) => Promise<void>;
   saveSession: (accessToken: string, refreshToken: string, user: User) => void;
   logout: () => Promise<void>;
@@ -60,7 +60,7 @@ const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => 
   const refreshSession = useCallback(
     async (token: string) => {
       try {
-        const response = await fetch('http://localhost:9999/api/v1/auth/refresh', {
+        const response = await fetch(`${process.env.REACT_APP_API_URL ?? 'http://localhost:9999'}/auth/refresh`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -92,6 +92,7 @@ const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => 
   );
 
   const saveSession = (accessToken: string, refreshToken: string, user: User) => {
+    console.log('saveSession', accessToken, refreshToken, user);
     token.setRefreshToken(refreshToken);
     token.setAccessToken(accessToken);
 
@@ -101,15 +102,16 @@ const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => 
   const loginWithUsername = useCallback(
     async (
       data: { username: string; password: string },
-      onSuccess?: () => void,
-      onError?: (error: AxiosError) => void
+      onSuccess: () => void,
+      onError: (error: AxiosError) => void
     ) => {
       try {
-        const response = await login(data.username, data.password);
+        const response = await login(data);
 
         if (!response.data) throw new Error('Login failed');
 
-        const responseData = response.data.result;
+        const responseData = response.data.result.result;
+        console.log('responseData', responseData);
         saveSession(responseData.accessToken, responseData.refreshToken, responseData.user);
         setIsAuthenticated(true);
 

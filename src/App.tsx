@@ -1,12 +1,13 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import RootLayout from './layouts/RootLayout';
-import Customers from './pages/Customers';
+import Customers from './pages/Customers/Customers';
 import Users from './pages/Users';
 import Products from './pages/Products';
 import SignIn from './pages/auth/SignIn';
 import AuthProvider from './contexts/AuthContext';
 import RequireAuthContainer from './components/RequireAuthContainer/RequireAuthContainer';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import VisitsPage from './pages/Visit/Visit';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -48,6 +49,10 @@ function App() {
                 <Route
                   path='users'
                   element={<Users />}
+                />
+                <Route
+                  path='visits'
+                  element={<VisitsPage />}
                 />
                 <Route
                   path='products'

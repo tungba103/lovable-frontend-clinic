@@ -1,4 +1,4 @@
-import { AlignJustify, Home, Settings, Users } from 'lucide-react';
+import { AlignJustify, Calendar, Home, Settings, Users } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import {
   Sidebar,
@@ -17,6 +17,11 @@ const items = [
     title: 'Home',
     url: '/',
     icon: Home,
+  },
+  {
+    title: 'Visits',
+    url: '/visits',
+    icon: Calendar,
   },
   {
     title: 'Customers',
