@@ -2,12 +2,15 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import RootLayout from './layouts/RootLayout';
 import Customers from './pages/Customers/Customers';
 import Users from './pages/Users';
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import Products from './pages/Products';
 import SignIn from './pages/auth/SignIn';
 import AuthProvider from './contexts/AuthContext';
 import RequireAuthContainer from './components/RequireAuthContainer/RequireAuthContainer';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import VisitsPage from './pages/Visit/Visit';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -21,6 +24,7 @@ const queryClient = new QueryClient({
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
+      <ToastContainer />
       <Router>
         <AuthProvider>
           <Routes>
@@ -63,6 +67,10 @@ function App() {
           </Routes>
         </AuthProvider>
       </Router>
+      <ReactQueryDevtools
+        initialIsOpen={false}
+        buttonPosition='bottom-right'
+      />
     </QueryClientProvider>
   );
 }

@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const BASE_URL = import.meta.env.REACT_APP_API_URL || 'http://localhost:9999/api/v1'
+const BASE_URL = import.meta.env.VITE_API_ENDPOINT || 'http://localhost:9999/api/v1';
 
 const publicApi = axios.create({
   baseURL: BASE_URL,

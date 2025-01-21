@@ -60,7 +60,7 @@ const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => 
   const refreshSession = useCallback(
     async (token: string) => {
       try {
-        const response = await fetch(`${process.env.REACT_APP_API_URL ?? 'http://localhost:9999'}/auth/refresh`, {
+        const response = await fetch(`${import.meta.env.VITE_API_ENDPOINT ?? 'http://localhost:9999'}/auth/refresh`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

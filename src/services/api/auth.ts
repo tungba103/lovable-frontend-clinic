@@ -19,3 +19,13 @@ export const logout = () =>
     method: 'POST',
     url: `${SERVICE_URL}/logout`,
   });
+
+export const refreshToken = (refreshToken: string) =>
+  publicApi<LoginApiResponse>({
+    method: 'POST',
+    url: `${SERVICE_URL}/refresh`,
+    data: {
+      refreshToken,
+    },
+    // withCredentials: true,
+  });
