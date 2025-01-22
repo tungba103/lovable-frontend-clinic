@@ -1,36 +1,28 @@
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Plus } from 'lucide-react';
-
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
-import { useCustomerMutation } from '@/hooks/data/useCustomerMutation';
-import { CreateCustomerRequest } from '@/types/api/customer';
+import { useVisitMutation } from '@/hooks/data/useVisitMutation';
+import { CreateVisitRequest } from '@/types/api/visit';
 import { useState } from 'react';
-import CustomerForm from './CustomerForm';
-import { customerFormSchema } from '@/validations/CustomerSchema';
+import VisitForm from './VisitForm';
+import { visitFormSchema } from '@/validations/VisitSchema';
 
-const CreateCustomerButton = () => {
+const CreateVisitButton = () => {
   const [open, setOpen] = useState(false);
-  const { createMutation } = useCustomerMutation();
+  const { createMutation } = useVisitMutation();
 
-  const form = useForm<z.infer<typeof customerFormSchema>>({
-    resolver: zodResolver(customerFormSchema),
-    defaultValues: {
-      gender: 'MALE',
-    },
+  const form = useForm<z.infer<typeof visitFormSchema>>({
+    resolver: zodResolver(visitFormSchema),
   });
 
-  function onSubmit(values: z.infer<typeof customerFormSchema>) {
-    const data: CreateCustomerRequest = {
-      name: values.name,
-      gender: values.gender,
-      birthDate: values.birthDate,
-      parentName: values.parentName,
-      parentPhone: values.parentPhone,
-      address: values.address,
+  function onSubmit(values: z.infer<typeof visitFormSchema>) {
+    const data: CreateVisitRequest = {
+      customerId: values.customerId,
     };
+
     createMutation.mutate(data, {
       onSuccess: () => {
         setOpen(false);
@@ -46,7 +38,7 @@ const CreateCustomerButton = () => {
       <DialogTrigger>
         <Button>
           <Plus />
-          <span>Thêm bệnh nhi mới</span>
+          <span>Thêm lượt khám mới</span>
         </Button>
       </DialogTrigger>
       <DialogContent
@@ -58,9 +50,9 @@ const CreateCustomerButton = () => {
         <DialogHeader>
           <DialogTitle className='mb-8'>
             <span className='px-2 py-1.5 rounded-sm bg-blue-300 mr-2' />
-            Thêm bệnh nhi mới
+            Thêm lượt khám mới
           </DialogTitle>
-          <CustomerForm
+          <VisitForm
             form={form}
             onSubmit={onSubmit}
             onCancel={() => setOpen(false)}
@@ -71,4 +63,4 @@ const CreateCustomerButton = () => {
   );
 };
 
-export default CreateCustomerButton;
+export default CreateVisitButton;

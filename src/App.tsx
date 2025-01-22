@@ -24,7 +24,7 @@ const queryClient = new QueryClient({
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <ToastContainer />
+      <ToastContainer autoClose={2000} />
       <Router>
         <AuthProvider>
           <Routes>

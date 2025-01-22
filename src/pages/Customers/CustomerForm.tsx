@@ -116,6 +116,7 @@ const CustomerForm = ({ form, onSubmit, onCancel }: CustomerFormProps) => {
             variant='outline'
             className='px-4'
             onClick={onCancel}
+            type='button'
           >
             Hủy
           </Button>

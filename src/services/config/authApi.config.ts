@@ -25,10 +25,9 @@ const refreshAccessToken = async () => {
 
     const response = await refreshTokenApi(refreshToken);
 
-    const { accessToken } = response.data.result.result;
+    const { accessToken } = response.data.result;
 
     token.setAccessToken(accessToken);
-    console.log('accessToken', accessToken);
     return accessToken;
   } catch (error) {
     return Promise.reject(error);

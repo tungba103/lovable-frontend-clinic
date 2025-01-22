@@ -13,7 +13,7 @@ const CustomTable = () => {
           <div className='flex items-center gap-4 flex-1 max-w-md'>
             <div className='text-sm font-medium text-muted-foreground whitespace-nowrap w-48'>
               <span className='px-2 py-2 rounded-sm bg-blue-300 mr-4' />
-              <span className='text-lg font-semibold'>{pagination?.total} Khách hàng</span>
+              <span className='text-lg font-semibold'>{pagination?.total} Bệnh nhi</span>
             </div>
           </div>
         </div>
@@ -46,9 +46,7 @@ const CustomTable = () => {
               <TableCell>{customer.address}</TableCell>
               <TableCell>{new Date(customer.createdAt).toLocaleDateString('vi-VN')}</TableCell>
               <TableCell className=''>
-                <div className='p-2 w-fit rounded-full hover:bg-gray-200'>
-                  <UpdateCustomerModal customer={customer} />
-                </div>
+                <UpdateCustomerModal customer={customer} />
               </TableCell>
             </TableRow>
           ))}

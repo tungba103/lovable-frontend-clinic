@@ -6,7 +6,7 @@ import { useToast } from '@/hooks/use-toast';
 import { login } from '@/services/api';
 import token from '@/utils/token';
 import { User } from '@/types/api/user';
-
+import { refreshToken as refreshTokenApi } from '@/services/api/auth';
 interface IAuthContext {
   isAuthenticated: boolean | null;
   me: User | null;
@@ -60,21 +60,15 @@ const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => 
   const refreshSession = useCallback(
     async (token: string) => {
       try {
-        const response = await fetch(`${import.meta.env.VITE_API_ENDPOINT ?? 'http://localhost:9999'}/auth/refresh`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ refreshToken: token }),
-        });
+        const response = await refreshTokenApi(token);
 
-        if (!response.ok) throw new Error('Refresh failed');
+        if (!response.data.result) throw new Error('Refresh failed');
 
-        const data = await response.json();
-        setMe(data.user);
+        const { accessToken, refreshToken, user } = response.data.result;
+
+        saveSession(accessToken, refreshToken, user);
+
         setIsAuthenticated(true);
-
-        navigate('/', { replace: true });
 
         return true;
       } catch (error) {
@@ -85,14 +79,15 @@ const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => 
         });
         console.log('refreshSession logout');
         logout();
+        queryClient.clear();
         return false;
       }
     },
-    [toast, logout, navigate]
+    [toast, logout, queryClient]
   );
 
   const saveSession = (accessToken: string, refreshToken: string, user: User) => {
-    console.log('saveSession', accessToken, refreshToken, user);
+    console.debug('saveSession');
     token.setRefreshToken(refreshToken);
     token.setAccessToken(accessToken);
 
@@ -110,7 +105,7 @@ const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => 
 
         if (!response.data) throw new Error('Login failed');
 
-        const responseData = response.data.result.result;
+        const responseData = response.data.result;
         console.log('responseData', responseData);
         saveSession(responseData.accessToken, responseData.refreshToken, responseData.user);
         setIsAuthenticated(true);

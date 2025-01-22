@@ -17,13 +17,11 @@ const UpdateCustomerModal = ({ customer }: IProps) => {
   const [open, setOpen] = useState(false);
   const { updateMutation } = useCustomerMutation();
 
-  console.log('customer', customer);
-
   const form = useForm<z.infer<typeof customerFormSchema>>({
     resolver: zodResolver(customerFormSchema),
     defaultValues: {
       ...customer,
-      birthDate: customer.birthDate,
+      birthDate: new Date(customer.birthDate).toISOString().split('T')[0],
     },
   });
   const handleSubmit = (data: UpdateCustomerRequest) => {
@@ -37,27 +35,33 @@ const UpdateCustomerModal = ({ customer }: IProps) => {
     );
   };
 
+  if (!customer) return null;
+
   return (
     <Dialog
       open={open}
       onOpenChange={setOpen}
     >
       <DialogTrigger>
-        <PenLine className='w-4 h-4 text-gray-500 hover:text-gray-900' />
+        <div className='p-2 w-fit rounded-full hover:bg-gray-200 group'>
+          <PenLine className='w-4 h-4 text-gray-500 group-hover:text-gray-900' />
+        </div>
       </DialogTrigger>
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle className='mb-8'>
-            <span className='px-2 py-1.5 rounded-sm bg-blue-300 mr-2' />
-            Cập nhật thông tin khách hàng
-          </DialogTitle>
-          <CustomerForm
-            form={form}
-            onSubmit={handleSubmit}
-            onCancel={() => setOpen(false)}
-          />
-        </DialogHeader>
-      </DialogContent>
+      {customer && (
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle className='mb-8'>
+              <span className='px-2 py-1.5 rounded-sm bg-blue-300 mr-2' />
+              Cập nhật thông tin bệnh nhi
+            </DialogTitle>
+            <CustomerForm
+              form={form}
+              onSubmit={handleSubmit}
+              onCancel={() => setOpen(false)}
+            />
+          </DialogHeader>
+        </DialogContent>
+      )}
     </Dialog>
   );
 };

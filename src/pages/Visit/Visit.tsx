@@ -1,126 +1,100 @@
-import { Button } from '@/components/ui/button';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Separator } from '@/components/ui/separator';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import CustomPagination from '@/components/CustomPagination';
+import SearchInput from '@/components/SearchInput';
+import CreateVisitButton from './CreateVisitButton';
+import { useListVisits } from '@/hooks/data/useListVisits';
+import { Badge } from '@/components/ui/badge';
+import CustomerModal from './CustomerModal';
+import { useState } from 'react';
+
+const VisitStatusSettings = {
+  NEW: {
+    color: 'bg-blue-500 text-white hover:bg-blue-600 text-sm px-2 py-0.5',
+    text: 'Mới',
+  },
+  IN_PROGRESS: {
+    color: 'bg-orange-500 text-white hover:bg-orange-600 text-sm px-2 py-0.5',
+    text: 'Đang thực hiện',
+  },
+  COMPLETED: {
+    color: 'bg-green-500 text-white hover:bg-green-600 text-sm px-2 py-0.5',
+    text: 'Hoàn thành',
+  },
+  CANCELLED: {
+    color: 'bg-gray-500 text-white hover:bg-gray-600 text-sm px-2 py-0.5',
+    text: 'Hủy',
+  },
+};
 
 const VisitsPage = () => {
+  const { visits, pagination } = useListVisits();
+
+  const [open, setOpen] = useState<number | null>(null);
+
   return (
-    <div>
-      <Dialog>
-        <DialogTrigger>
-          <Button>Open</Button>
-        </DialogTrigger>
-        <DialogContent className='max-w-full max-h-screen'>
-          <DialogHeader className=''>
-            <DialogTitle className='mb-2'>Bá Thanh Tùng (0965899821)</DialogTitle>
-            <Separator />
-          </DialogHeader>
-          <div className='flex gap-4'>
-            <div className='w-96'>
-              <table className='w-full'>
-                <thead className='bg-blue-200'>
-                  <tr>
-                    <th className='text-left font-medium p-2'>Ngày đến</th>
-                    <th className='text-left font-medium p-2'>Bác sĩ</th>
-                    <th className='text-left font-medium p-2'>Thành tiền</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {[
-                    { date: '15-01-2025', doctor: 'Dr. Smith', amount: '100' },
-                    { date: '10-01-2025', doctor: 'Dr. Johnson', amount: '200' },
-                    { date: '02-01-2025', doctor: 'Dr. Brown', amount: '300' },
-                  ].map((visit, index) => (
-                    <tr
-                      key={index}
-                      className='hover:bg-gray-100 cursor-pointer border-b-2 border-gray-200'
-                    >
-                      <td className='p-2'>{visit.date}</td>
-                      <td className='p-2'>{visit.doctor}</td>
-                      <td className='p-2'>{visit.amount}</td>
-                    </tr>
-                  ))}
-                </tbody>
-                <tfoot>
-                  <tr>
-                    <td className='p-2'>Tổng tiền</td>
-                    <td className='p-2'></td>
-                    <td className='p-2'>1,000,000 VND</td>
-                  </tr>
-                </tfoot>
-              </table>
-            </div>
-            <div className='w-full'>
-              <p className='w-full bg-blue-200 ps-4 py-2'>Ngày: 15-01-2025</p>
-              <Card>
-                <CardHeader>
-                  <CardTitle>Thông tin dành cho bác sĩ</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className='flex justify-start gap-4'>
-                    <div className='w-96'>
-                      <Label>Chẩn đoán</Label>
-                      <Input
-                        className='my-2'
-                        placeholder='Chẩn đoán'
-                      />
-                    </div>
-                    <div className='w-96'>
-                      <Label>Triệu chứng chính</Label>
-                      <Input
-                        className='my-2'
-                        placeholder='Triệu chứng chính'
-                      />
-                    </div>
-                  </div>
-                  <div className='w-96'>
-                    <Label>Tiền sử bản thân/gia đình</Label>
-                    <Input
-                      className='my-2'
-                      placeholder='Tiền sử bản thân/gia đình'
-                    />
-                  </div>
-                </CardContent>
-              </Card>
-              <Card>
-                <CardHeader>
-                  <CardTitle>Thông tin về đơn thuốc</CardTitle>
-                </CardHeader>
-              </Card>
-              <Card>
-                <CardHeader>
-                  <CardTitle>Thông tin về dịch vụ</CardTitle>
-                </CardHeader>
-              </Card>
-              <Card>
-                <CardHeader>
-                  <CardTitle>Tái khám</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className='flex justify-start gap-4'>
-                    <div className='w-96'>
-                      <Label>Ngày tái khám</Label>
-                      <Input
-                        className='my-2'
-                        placeholder='Ngày tái khám'
-                      />
-                    </div>
-                    <div className='w-96'>
-                      <Label>Lời dặn</Label>
-                      <Input
-                        className='my-2'
-                        placeholder='Lời dặn'
-                      />
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
+    <div className='container mx-auto'>
+      <div className='mb-6'>
+        <p className='text-2xl font-bold'>Quản lý lượt khám</p>
+      </div>
+      <div className='flex items-center gap-4 mb-6'>
+        <CreateVisitButton />
+        <SearchInput />
+      </div>
+
+      <div className='p-2 bg-white rounded-lg shadow-lg'>
+        <div className='p-4 border-b'>
+          <div className='flex items-center justify-between gap-4'>
+            <div className='flex items-center gap-4 flex-1 max-w-md'>
+              <div className='text-sm font-medium text-muted-foreground whitespace-nowrap w-48'>
+                <span className='px-2 py-2 rounded-sm bg-blue-300 mr-4' />
+                <span className='text-lg font-semibold'>{pagination?.total} Lượt khám</span>
+              </div>
             </div>
           </div>
-        </DialogContent>
-      </Dialog>
+        </div>
+
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Bệnh nhi</TableHead>
+              <TableHead>Phụ huynh & SĐT</TableHead>
+              <TableHead>Trạng thái</TableHead>
+              <TableHead>Người tạo</TableHead>
+              <TableHead>Ngày tạo</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {visits?.map((visit) => (
+              <TableRow
+                key={visit.id}
+                className='cursor-pointer hover:bg-gray-100'
+                onClick={() => setOpen(visit.customer.id)}
+              >
+                <TableCell className='font-medium'>{visit.customer.name}</TableCell>
+                <TableCell>
+                  <div>{visit.customer.parentName}</div>
+                  <div className='text-sm text-gray-500'>{visit.customer.parentPhone}</div>
+                </TableCell>
+                <TableCell>
+                  <Badge className={VisitStatusSettings[visit.status].color}>
+                    {VisitStatusSettings[visit.status].text}
+                  </Badge>
+                </TableCell>
+                <TableCell>{visit.creatorName}</TableCell>
+                <TableCell>{new Date(visit.createdAt).toLocaleDateString('vi-VN')}</TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+        <CustomPagination
+          currentPage={pagination?.page || 1}
+          totalPage={pagination?.totalPage || 1}
+        />
+      </div>
+      <CustomerModal
+        open={!!open}
+        onOpenChange={() => setOpen(null)}
+      />
     </div>
   );
 };
