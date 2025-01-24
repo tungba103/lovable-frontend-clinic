@@ -1,24 +1,24 @@
 import { Form, FormControl, FormField, FormItem, FormLabel } from '@/components/ui/form';
 import { Button } from '@/components/ui/button';
 import { UseFormReturn } from 'react-hook-form';
-import { visitFormSchema } from '@/validations/VisitSchema';
+import { existingVisitFormSchema } from '@/validations/VisitSchema';
 import { z } from 'zod';
 import { useListCustomers } from '@/hooks/data/useListCustomers';
 
-type VisitFormProps = {
-  form: UseFormReturn<z.infer<typeof visitFormSchema>>;
-  onSubmit: (values: z.infer<typeof visitFormSchema>) => void;
+type ExistingCustomerVisitFormProps = {
+  form: UseFormReturn<z.infer<typeof existingVisitFormSchema>>;
+  onSubmit: (values: z.infer<typeof existingVisitFormSchema>) => void;
   onCancel: () => void;
 };
 
-const VisitForm = ({ form, onSubmit, onCancel }: VisitFormProps) => {
+const ExistingCustomerVisitForm = ({ form, onSubmit, onCancel }: ExistingCustomerVisitFormProps) => {
   const { customers } = useListCustomers();
 
   return (
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className='space-y-8'
+        className='space-y-4'
       >
         <FormField
           control={form.control}
@@ -31,14 +31,7 @@ const VisitForm = ({ form, onSubmit, onCancel }: VisitFormProps) => {
                   className='w-full p-2 border rounded-md'
                   {...field}
                   value={field.value || ''}
-                  onChange={(e) => {
-                    const customerId = Number(e.target.value);
-                    field.onChange(customerId);
-                    const customer = customers?.find((c) => c.id === customerId);
-                    if (customer) {
-                      form.setValue('customerId', customer.id);
-                    }
-                  }}
+                  onChange={(e) => field.onChange(Number(e.target.value))}
                 >
                   <option value=''>Chọn bệnh nhi</option>
                   {customers?.map((customer) => (
@@ -46,7 +39,7 @@ const VisitForm = ({ form, onSubmit, onCancel }: VisitFormProps) => {
                       key={customer.id}
                       value={customer.id}
                     >
-                      {customer.name}
+                      {customer.name} - {customer.parentPhone}
                     </option>
                   ))}
                 </select>
@@ -75,4 +68,4 @@ const VisitForm = ({ form, onSubmit, onCancel }: VisitFormProps) => {
   );
 };
 
-export default VisitForm;
+export default ExistingCustomerVisitForm;

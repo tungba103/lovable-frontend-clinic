@@ -1,5 +1,5 @@
-import { CalendarPlus, Home, PillIcon, StethoscopeIcon, UserCog, Users } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { CalendarPlus, ChevronDown, ChevronRight, Home, PillIcon, StethoscopeIcon, UserCog, Users } from 'lucide-react';
+import { Link, useLocation } from 'react-router-dom';
 import {
   Sidebar,
   SidebarContent,
@@ -11,6 +11,7 @@ import {
   SidebarMenuItem,
 } from './ui/sidebar';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { useState } from 'react';
 
 const items = [
   {
@@ -29,19 +30,49 @@ const items = [
     icon: Users,
   },
   {
-    title: 'Sản phẩm',
-    url: '/products',
+    title: 'Thuốc',
+    url: '/products-root',
     icon: PillIcon,
+    subItems: [
+      {
+        title: 'Danh sách thuốc',
+        url: '/products',
+      },
+      {
+        title: 'Danh mục thuốc',
+        url: '/product-categories',
+      },
+    ],
   },
   {
     title: 'Thủ thuật',
-    url: '/products',
+    url: '/services-root',
     icon: StethoscopeIcon,
+    subItems: [
+      {
+        title: 'Danh sách thủ thuật',
+        url: '/services',
+      },
+      {
+        title: 'Danh mục thủ thuật',
+        url: '/service-categories',
+      },
+    ],
   },
 ];
 
 const AppSidebar = () => {
-  // const { open, setOpen } = useSidebar();
+  const [expandedItems, setExpandedItems] = useState<string[]>([]);
+  const location = useLocation();
+
+  const toggleItem = (title: string) => {
+    setExpandedItems((prev) => (prev.includes(title) ? prev.filter((item) => item !== title) : [...prev, title]));
+  };
+
+  const isActiveRoute = (url: string) => {
+    return location.pathname === url;
+  };
+
   return (
     <Sidebar className='p-2'>
       <SidebarContent className='bg-white'>
@@ -57,29 +88,54 @@ const AppSidebar = () => {
         </Link>
         <SidebarGroup>
           <SidebarGroupContent>
-            {/* <SidebarMenuButton
-              size='lg'
-              onClick={() => setOpen(!open)}
-            >
-              <div>
-                <AlignJustify size={24} />
-              </div>
-            </SidebarMenuButton> */}
             <SidebarMenu>
               {items.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton
                     size='lg'
                     asChild
-                    className=' text-slate-600 hover:text-blue-500 hover:bg-blue-100'
+                    className={`text-slate-600 hover:text-blue-500 hover:bg-blue-100 ${
+                      isActiveRoute(item.url) ? 'bg-blue-100 text-blue-500' : ''
+                    }`}
+                    onClick={
+                      item.subItems
+                        ? (e) => {
+                            e.preventDefault();
+                            toggleItem(item.title);
+                          }
+                        : undefined
+                    }
                   >
                     <Link to={item.url}>
                       <div className='pr-2'>
                         <item.icon />
                       </div>
                       <span className='text-base font-medium'>{item.title}</span>
+                      {item.subItems && (
+                        <div className='ml-auto'>
+                          {expandedItems.includes(item.title) ? <ChevronDown size={20} /> : <ChevronRight size={20} />}
+                        </div>
+                      )}
                     </Link>
                   </SidebarMenuButton>
+                  {item.subItems && expandedItems.includes(item.title) && (
+                    <div className='ml-8 mt-1'>
+                      {item.subItems.map((subItem) => (
+                        <SidebarMenuButton
+                          key={subItem.title}
+                          size='lg'
+                          asChild
+                          className={`text-slate-600 hover:text-blue-500 hover:bg-blue-100 ${
+                            isActiveRoute(subItem.url) ? 'bg-blue-100 text-blue-500' : ''
+                          }`}
+                        >
+                          <Link to={subItem.url}>
+                            <span className='text-base font-medium'>{subItem.title}</span>
+                          </Link>
+                        </SidebarMenuButton>
+                      ))}
+                    </div>
+                  )}
                 </SidebarMenuItem>
               ))}
             </SidebarMenu>
@@ -92,7 +148,9 @@ const AppSidebar = () => {
             <SidebarMenuButton
               size='lg'
               asChild
-              className=' text-slate-600 hover:text-blue-500 hover:bg-blue-100'
+              className={`text-slate-600 hover:text-blue-500 hover:bg-blue-100 ${
+                isActiveRoute('/users') ? 'bg-blue-100 text-blue-500' : ''
+              }`}
             >
               <Link to='/users'>
                 <div className='pr-2'>

@@ -5,6 +5,7 @@ import { getListVisits } from "@/services/api/visit";
 import useQueryString from "../useQueryString";
 import { useEffect } from "react";
 
+
 export const useListVisits = () => {
   const { queryString, setQueryString } = useQueryString();
 
@@ -35,7 +36,11 @@ export const useListVisits = () => {
   
   const { data, isLoading } = useQuery({
     queryKey: ['visits', page, pageSize, search],
-    queryFn: () => getListVisits({ page: page, pageSize: pageSize, search: search }),
+    queryFn: () => getListVisits({ 
+      page: page, 
+      pageSize: pageSize, 
+      search: search, 
+    }),
     select: (data) => parseData(data.data),
     enabled: !!page && !!pageSize,
   });

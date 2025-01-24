@@ -2,9 +2,11 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { useListCustomers } from '@/hooks/data/useListCustomers';
 import CustomPagination from '@/components/CustomPagination';
 import UpdateCustomerModal from '../UpdateCustomerModal';
+import { useCustomerModal } from '@/contexts/CustomerModalContext';
 
 const CustomTable = () => {
   const { customers, pagination } = useListCustomers();
+  const { openCustomerModal } = useCustomerModal();
 
   return (
     <div className='p-2 bg-white rounded-lg shadow-lg'>
@@ -13,7 +15,7 @@ const CustomTable = () => {
           <div className='flex items-center gap-4 flex-1 max-w-md'>
             <div className='text-sm font-medium text-muted-foreground whitespace-nowrap w-48'>
               <span className='px-2 py-2 rounded-sm bg-blue-300 mr-4' />
-              <span className='text-lg font-semibold'>{pagination?.total} Bệnh nhi</span>
+              <span className='text-lg font-semibold'>{pagination?.total} Bệnh nhân</span>
             </div>
           </div>
         </div>
@@ -28,6 +30,7 @@ const CustomTable = () => {
             <TableHead>Phụ huynh & SĐT</TableHead>
             <TableHead>Địa chỉ</TableHead>
             <TableHead>Ngày tạo</TableHead>
+            <TableHead></TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -35,6 +38,7 @@ const CustomTable = () => {
             <TableRow
               key={customer.id}
               className='cursor-pointer'
+              onClick={() => openCustomerModal(customer.id)}
             >
               <TableCell className='font-medium'>{customer.name}</TableCell>
               <TableCell>{customer.gender === 'MALE' ? 'Nam' : 'Nữ'}</TableCell>
@@ -45,7 +49,10 @@ const CustomTable = () => {
               </TableCell>
               <TableCell>{customer.address}</TableCell>
               <TableCell>{new Date(customer.createdAt).toLocaleDateString('vi-VN')}</TableCell>
-              <TableCell className=''>
+              <TableCell
+                className=''
+                onClick={(e) => e.stopPropagation()}
+              >
                 <UpdateCustomerModal customer={customer} />
               </TableCell>
             </TableRow>

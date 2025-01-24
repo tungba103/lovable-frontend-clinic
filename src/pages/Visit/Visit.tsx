@@ -4,8 +4,7 @@ import SearchInput from '@/components/SearchInput';
 import CreateVisitButton from './CreateVisitButton';
 import { useListVisits } from '@/hooks/data/useListVisits';
 import { Badge } from '@/components/ui/badge';
-import CustomerModal from './CustomerModal';
-import { useState } from 'react';
+import { useCustomerModal } from '@/contexts/CustomerModalContext';
 
 const VisitStatusSettings = {
   NEW: {
@@ -28,8 +27,7 @@ const VisitStatusSettings = {
 
 const VisitsPage = () => {
   const { visits, pagination } = useListVisits();
-
-  const [open, setOpen] = useState<number | null>(null);
+  const { openCustomerModal } = useCustomerModal();
 
   return (
     <div className='container mx-auto'>
@@ -68,7 +66,7 @@ const VisitsPage = () => {
               <TableRow
                 key={visit.id}
                 className='cursor-pointer hover:bg-gray-100'
-                onClick={() => setOpen(visit.customer.id)}
+                onClick={() => openCustomerModal(visit.customer.id)}
               >
                 <TableCell className='font-medium'>{visit.customer.name}</TableCell>
                 <TableCell>
@@ -91,10 +89,6 @@ const VisitsPage = () => {
           totalPage={pagination?.totalPage || 1}
         />
       </div>
-      <CustomerModal
-        open={!!open}
-        onOpenChange={() => setOpen(null)}
-      />
     </div>
   );
 };
