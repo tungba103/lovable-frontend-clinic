@@ -4,6 +4,7 @@ import { useCustomer } from '@/hooks/data/useCustomer';
 import VisitHistory from './components/VisitHistory';
 import VisitDetail from './components/VisitDetail';
 import { VisitProvider } from '@/contexts/VisitContext';
+import { customFormatDate } from '@/utils/format-date.util';
 
 interface CustomerModalProps {
   open: boolean;
@@ -27,7 +28,7 @@ const CustomerModal = ({ open, onOpenChange, customerId }: CustomerModalProps) =
         <DialogHeader>
           <DialogTitle className='mb-2'>
             {customer?.name} | {customer?.parentPhone} | {customer?.gender === 'MALE' ? 'Nam' : 'Nữ'} |{' '}
-            {customer?.birthDate ? new Date(customer?.birthDate).toLocaleDateString('vi-VN') : ''}
+            {customer?.birthDate ? customFormatDate(new Date(customer?.birthDate)) : ''}
           </DialogTitle>
           <Separator />
         </DialogHeader>

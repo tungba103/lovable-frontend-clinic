@@ -49,6 +49,7 @@ const CreateUserButton = () => {
             form={form}
             onSubmit={handleSubmit}
             onCancel={() => setOpen(false)}
+            isLoading={createMutation.isPending}
           />
         </DialogHeader>
       </DialogContent>

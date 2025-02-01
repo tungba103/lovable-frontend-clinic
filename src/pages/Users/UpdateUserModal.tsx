@@ -57,6 +57,7 @@ const UpdateUserModal = ({ user }: IProps) => {
             form={form}
             onSubmit={handleSubmit}
             onCancel={() => setOpen(false)}
+            isLoading={updateMutation.isPending}
           />
         </DialogHeader>
       </DialogContent>

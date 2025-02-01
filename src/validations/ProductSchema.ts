@@ -11,4 +11,5 @@ export const productFormSchema = z.object({
     message: 'Giá sản phẩm không được âm.',
   }),
   description: z.string().optional(),
-}); 
+  status: z.enum(['ACTIVE', 'INACTIVE']).optional(),
+});

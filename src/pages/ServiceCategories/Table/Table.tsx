@@ -2,9 +2,11 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { useListServiceCategories } from '@/hooks/data/useListServiceCategories';
 import CustomPagination from '@/components/CustomPagination';
 import UpdateServiceCategoryModal from '../UpdateServiceCategoryModal';
+import TableLoading from '@/components/Table/TableLoading';
+import TableEmpty from '@/components/Table/TableEmpty';
 
 const CustomTable = () => {
-  const { serviceCategories, pagination } = useListServiceCategories();
+  const { serviceCategories, pagination, isLoading } = useListServiceCategories();
 
   return (
     <div className='p-2 bg-white rounded-lg shadow-lg'>
@@ -13,7 +15,7 @@ const CustomTable = () => {
           <div className='flex items-center gap-4 flex-1 max-w-md'>
             <div className='text-sm font-medium text-muted-foreground whitespace-nowrap w-48'>
               <span className='px-2 py-2 rounded-sm bg-blue-300 mr-4' />
-              <span className='text-lg font-semibold'>{pagination?.total} Danh mục</span>
+              <span className='text-lg font-semibold'>{pagination?.total ?? '-'} Danh mục</span>
             </div>
           </div>
         </div>
@@ -29,27 +31,31 @@ const CustomTable = () => {
             <TableHead></TableHead>
           </TableRow>
         </TableHeader>
-        <TableBody>
-          {serviceCategories?.map((category) => (
-            <TableRow key={category.id}>
-              <TableCell className='font-medium'>{category.name}</TableCell>
-              <TableCell>{category.description}</TableCell>
-              <TableCell>
-                <span
-                  className={`px-2 py-1 rounded-full text-xs ${
-                    category.isActive ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
-                  }`}
-                >
-                  {category.isActive ? 'Hoạt động' : 'Không hoạt động'}
-                </span>
-              </TableCell>
-              <TableCell>{new Date(category.createdAt).toLocaleDateString('vi-VN')}</TableCell>
-              <TableCell>
-                <UpdateServiceCategoryModal category={category} />
-              </TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
+        {isLoading && <TableLoading colSpan={5} />}
+        {!isLoading && serviceCategories && serviceCategories.length === 0 && <TableEmpty colSpan={5} />}
+        {!isLoading && serviceCategories && serviceCategories.length > 0 && (
+          <TableBody>
+            {serviceCategories?.map((category) => (
+              <TableRow key={category.id}>
+                <TableCell className='font-medium'>{category.name}</TableCell>
+                <TableCell>{category.description}</TableCell>
+                <TableCell>
+                  <span
+                    className={`px-2 py-1 rounded-full text-xs ${
+                      category.isActive ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+                    }`}
+                  >
+                    {category.isActive ? 'Hoạt động' : 'Không hoạt động'}
+                  </span>
+                </TableCell>
+                <TableCell>{new Date(category.createdAt).toLocaleDateString('vi-VN')}</TableCell>
+                <TableCell>
+                  <UpdateServiceCategoryModal category={category} />
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        )}
       </Table>
       <CustomPagination
         currentPage={pagination?.page || 1}

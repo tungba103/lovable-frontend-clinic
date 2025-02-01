@@ -4,14 +4,16 @@ import { Button } from '@/components/ui/button';
 import { UseFormReturn } from 'react-hook-form';
 import { serviceCategoryFormSchema } from '@/validations/ServiceCategorySchema';
 import { z } from 'zod';
+import AsyncButton from '@/components/AsyncButton';
 
 type ServiceCategoryFormProps = {
   form: UseFormReturn<z.infer<typeof serviceCategoryFormSchema>>;
   onSubmit: (values: z.infer<typeof serviceCategoryFormSchema>) => void;
   onCancel: () => void;
+  isLoading: boolean;
 };
 
-const ServiceCategoryForm = ({ form, onSubmit, onCancel }: ServiceCategoryFormProps) => {
+const ServiceCategoryForm = ({ form, onSubmit, onCancel, isLoading }: ServiceCategoryFormProps) => {
   return (
     <Form {...form}>
       <form
@@ -57,12 +59,12 @@ const ServiceCategoryForm = ({ form, onSubmit, onCancel }: ServiceCategoryFormPr
           >
             Hủy
           </Button>
-          <Button
-            className='px-4'
-            type='submit'
+          <AsyncButton
+            isLoading={isLoading}
+            onClick={() => form.handleSubmit(onSubmit)}
           >
             Lưu
-          </Button>
+          </AsyncButton>
         </div>
       </form>
     </Form>

@@ -4,14 +4,16 @@ import { UseFormReturn } from 'react-hook-form';
 import { existingVisitFormSchema } from '@/validations/VisitSchema';
 import { z } from 'zod';
 import { useListCustomers } from '@/hooks/data/useListCustomers';
+import AsyncButton from '@/components/AsyncButton';
 
 type ExistingCustomerVisitFormProps = {
   form: UseFormReturn<z.infer<typeof existingVisitFormSchema>>;
+  isLoading: boolean;
   onSubmit: (values: z.infer<typeof existingVisitFormSchema>) => void;
   onCancel: () => void;
 };
 
-const ExistingCustomerVisitForm = ({ form, onSubmit, onCancel }: ExistingCustomerVisitFormProps) => {
+const ExistingCustomerVisitForm = ({ form, onSubmit, onCancel, isLoading }: ExistingCustomerVisitFormProps) => {
   const { customers } = useListCustomers();
 
   return (
@@ -56,12 +58,12 @@ const ExistingCustomerVisitForm = ({ form, onSubmit, onCancel }: ExistingCustome
           >
             Hủy
           </Button>
-          <Button
-            className='px-4'
-            type='submit'
+          <AsyncButton
+            isLoading={isLoading}
+            onClick={() => form.handleSubmit(onSubmit)}
           >
             Lưu
-          </Button>
+          </AsyncButton>
         </div>
       </form>
     </Form>

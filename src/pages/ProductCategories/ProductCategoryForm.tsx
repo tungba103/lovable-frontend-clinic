@@ -4,14 +4,16 @@ import { Button } from '@/components/ui/button';
 import { UseFormReturn } from 'react-hook-form';
 import { productCategoryFormSchema } from '@/validations/ProductCategorySchema';
 import { z } from 'zod';
+import AsyncButton from '@/components/AsyncButton';
 
 type ProductCategoryFormProps = {
   form: UseFormReturn<z.infer<typeof productCategoryFormSchema>>;
   onSubmit: (values: z.infer<typeof productCategoryFormSchema>) => void;
   onCancel: () => void;
+  isLoading: boolean;
 };
 
-const ProductCategoryForm = ({ form, onSubmit, onCancel }: ProductCategoryFormProps) => {
+const ProductCategoryForm = ({ form, onSubmit, onCancel, isLoading }: ProductCategoryFormProps) => {
   return (
     <Form {...form}>
       <form
@@ -57,12 +59,12 @@ const ProductCategoryForm = ({ form, onSubmit, onCancel }: ProductCategoryFormPr
           >
             Hủy
           </Button>
-          <Button
-            className='px-4'
-            type='submit'
+          <AsyncButton
+            isLoading={isLoading}
+            onClick={() => form.handleSubmit(onSubmit)}
           >
             Lưu
-          </Button>
+          </AsyncButton>
         </div>
       </form>
     </Form>

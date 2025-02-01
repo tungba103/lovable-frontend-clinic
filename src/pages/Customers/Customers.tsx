@@ -10,7 +10,7 @@ function CustomersPage() {
       </div>
       <div className='flex items-center gap-4 mb-6'>
         <CreateCustomerButton />
-        <SearchInput />
+        <SearchInput placeholder='Tìm kiếm theo tên hoặc số điện thoại' />
       </div>
       <CustomTable />
     </div>

@@ -4,14 +4,16 @@ import { Input } from '@/components/ui/input';
 import { UseFormReturn } from 'react-hook-form';
 import { z } from 'zod';
 import { userFormSchema } from '@/validations/UserSchema';
+import AsyncButton from '@/components/AsyncButton';
 
 interface UserFormProps {
   form: UseFormReturn<z.infer<typeof userFormSchema>>;
   onSubmit: (values: z.infer<typeof userFormSchema>) => void;
   onCancel: () => void;
+  isLoading: boolean;
 }
 
-const UserForm = ({ form, onSubmit, onCancel }: UserFormProps) => {
+const UserForm = ({ form, onSubmit, onCancel, isLoading }: UserFormProps) => {
   return (
     <Form {...form}>
       <form
@@ -68,7 +70,12 @@ const UserForm = ({ form, onSubmit, onCancel }: UserFormProps) => {
           >
             Hủy
           </Button>
-          <Button type='submit'>Lưu</Button>
+          <AsyncButton
+            isLoading={isLoading}
+            onClick={() => form.handleSubmit(onSubmit)}
+          >
+            Lưu
+          </AsyncButton>
         </div>
       </form>
     </Form>

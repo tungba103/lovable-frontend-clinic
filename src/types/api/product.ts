@@ -14,7 +14,7 @@ export interface Product {
   productCategory: ProductCategory;
 }
 
-export type ProductBase = Omit<Product, 'id' | 'code' | 'status' | 'productCategory' | 'isActive' | 'createdAt' | 'updatedAt'>;
+export type ProductBase = Omit<Product, 'id' | 'code' | 'productCategory' | 'isActive' | 'createdAt' | 'updatedAt'>;
 
 export type CreateProductRequest = ProductBase;
 

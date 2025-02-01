@@ -53,6 +53,7 @@ const CreateServiceCategoryButton = () => {
             form={form}
             onSubmit={onSubmit}
             onCancel={() => setOpen(false)}
+            isLoading={createMutation.isPending}
           />
         </DialogHeader>
       </DialogContent>

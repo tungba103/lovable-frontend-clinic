@@ -3,9 +3,12 @@ import { useListCustomers } from '@/hooks/data/useListCustomers';
 import CustomPagination from '@/components/CustomPagination';
 import UpdateCustomerModal from '../UpdateCustomerModal';
 import { useCustomerModal } from '@/contexts/CustomerModalContext';
+import TableLoading from '@/components/Table/TableLoading';
+import TableEmpty from '@/components/Table/TableEmpty';
+import { customFormatDate } from '@/utils/format-date.util';
 
 const CustomTable = () => {
-  const { customers, pagination } = useListCustomers();
+  const { customers, isLoading, pagination } = useListCustomers();
   const { openCustomerModal } = useCustomerModal();
 
   return (
@@ -15,7 +18,7 @@ const CustomTable = () => {
           <div className='flex items-center gap-4 flex-1 max-w-md'>
             <div className='text-sm font-medium text-muted-foreground whitespace-nowrap w-48'>
               <span className='px-2 py-2 rounded-sm bg-blue-300 mr-4' />
-              <span className='text-lg font-semibold'>{pagination?.total} Bệnh nhân</span>
+              <span className='text-lg font-semibold'>{pagination?.total ?? '-'} Bệnh nhân</span>
             </div>
           </div>
         </div>
@@ -33,31 +36,32 @@ const CustomTable = () => {
             <TableHead></TableHead>
           </TableRow>
         </TableHeader>
-        <TableBody>
-          {customers?.map((customer) => (
-            <TableRow
-              key={customer.id}
-              className='cursor-pointer'
-              onClick={() => openCustomerModal(customer.id)}
-            >
-              <TableCell className='font-medium'>{customer.name}</TableCell>
-              <TableCell>{customer.gender === 'MALE' ? 'Nam' : 'Nữ'}</TableCell>
-              <TableCell>{new Date(customer.birthDate).toLocaleDateString('vi-VN')}</TableCell>
-              <TableCell>
-                <div>{customer.parentName}</div>
-                <div className='text-sm text-gray-500'>{customer.parentPhone}</div>
-              </TableCell>
-              <TableCell>{customer.address}</TableCell>
-              <TableCell>{new Date(customer.createdAt).toLocaleDateString('vi-VN')}</TableCell>
-              <TableCell
-                className=''
-                onClick={(e) => e.stopPropagation()}
+        {isLoading && <TableLoading />}
+        {!isLoading && customers && customers.length === 0 && <TableEmpty />}
+        {!isLoading && customers && customers.length > 0 && (
+          <TableBody>
+            {customers?.map((customer) => (
+              <TableRow
+                key={customer.id}
+                className='cursor-pointer'
+                onClick={() => openCustomerModal(customer.id)}
               >
-                <UpdateCustomerModal customer={customer} />
-              </TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
+                <TableCell className='font-medium'>{customer.name}</TableCell>
+                <TableCell>{customer.gender === 'MALE' ? 'Nam' : 'Nữ'}</TableCell>
+                <TableCell>{customFormatDate(new Date(customer.birthDate))}</TableCell>
+                <TableCell>
+                  <div>{customer.parentName}</div>
+                  <div className='text-sm text-gray-500'>{customer.parentPhone}</div>
+                </TableCell>
+                <TableCell>{customer.address}</TableCell>
+                <TableCell>{customFormatDate(new Date(customer.createdAt))}</TableCell>
+                <TableCell onClick={(e) => e.stopPropagation()}>
+                  <UpdateCustomerModal customer={customer} />
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        )}
       </Table>
       <CustomPagination
         currentPage={pagination?.page || 1}

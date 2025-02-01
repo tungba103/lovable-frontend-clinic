@@ -14,7 +14,7 @@ export interface Service {
   serviceCategory: ServiceCategory;
 }
 
-export type ServiceBase = Omit<Service, 'id' | 'code' | 'status' | 'serviceCategory' | 'isActive' | 'createdAt' | 'updatedAt'>;
+export type ServiceBase = Omit<Service, 'id' | 'code' | 'serviceCategory' | 'isActive' | 'createdAt' | 'updatedAt'>;
 
 export type CreateServiceRequest = ServiceBase;
 

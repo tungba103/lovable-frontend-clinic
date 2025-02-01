@@ -64,6 +64,7 @@ const CreateCustomerButton = () => {
             form={form}
             onSubmit={onSubmit}
             onCancel={() => setOpen(false)}
+            isLoading={createMutation.isPending}
           />
         </DialogHeader>
       </DialogContent>

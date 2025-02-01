@@ -75,7 +75,7 @@ const CreateVisitButton = () => {
       onOpenChange={setOpen}
     >
       <DialogTrigger>
-        <Button>
+        <Button onClick={() => setOpen(true)}>
           <Plus />
           <span>Thêm lượt khám mới</span>
         </Button>
@@ -105,6 +105,7 @@ const CreateVisitButton = () => {
                 form={existingCustomerForm}
                 onSubmit={onSubmitExisting}
                 onCancel={() => setOpen(false)}
+                isLoading={createMutation.isPending}
               />
             </TabsContent>
             <TabsContent value='new'>
@@ -112,6 +113,7 @@ const CreateVisitButton = () => {
                 form={newCustomerForm}
                 onSubmit={onSubmitNew}
                 onCancel={() => setOpen(false)}
+                isLoading={createMutation.isPending}
               />
             </TabsContent>
           </Tabs>

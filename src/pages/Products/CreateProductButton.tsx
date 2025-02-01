@@ -24,6 +24,7 @@ const CreateProductButton = () => {
       productCategoryId: values.productCategoryId,
       price: values.price,
       description: values.description || '',
+      status: values.status ?? 'ACTIVE',
     };
 
     createMutation.mutate(data, {
@@ -55,6 +56,7 @@ const CreateProductButton = () => {
             form={form}
             onSubmit={onSubmit}
             onCancel={() => setOpen(false)}
+            isLoading={createMutation.isPending}
           />
         </DialogHeader>
       </DialogContent>

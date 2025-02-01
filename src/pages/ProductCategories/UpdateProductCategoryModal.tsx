@@ -56,6 +56,7 @@ const UpdateProductCategoryModal = ({ productCategory }: IProps) => {
             form={form}
             onSubmit={handleSubmit}
             onCancel={() => setOpen(false)}
+            isLoading={updateMutation.isPending}
           />
         </DialogHeader>
       </DialogContent>

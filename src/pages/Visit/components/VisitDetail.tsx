@@ -15,6 +15,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { useListProducts } from '@/hooks/data/useListProducts';
 import { CircleX } from 'lucide-react';
 import { useListServices } from '@/hooks/data/useListServices';
+import { customFormatDate } from '@/utils/format-date.util';
 
 const VisitDetail = () => {
   const { selectedVisitId } = useVisit();
@@ -196,7 +197,7 @@ const VisitDetail = () => {
   return (
     <div className='w-full'>
       <p className='w-full bg-blue-200 ps-4 py-2 mb-4'>
-        Ngày: {new Date(visit?.createdAt || '').toLocaleDateString('vi-VN')}
+        Ngày: {visit?.createdAt ? customFormatDate(new Date(visit.createdAt)) : ''}
       </p>
       <form
         onSubmit={form.handleSubmit(onSubmit)}

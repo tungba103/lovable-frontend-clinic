@@ -4,14 +4,16 @@ import { Button } from '@/components/ui/button';
 import { UseFormReturn } from 'react-hook-form';
 import { customerFormSchema } from '@/validations/CustomerSchema';
 import { z } from 'zod';
+import AsyncButton from '@/components/AsyncButton';
 
 type CustomerFormProps = {
   form: UseFormReturn<z.infer<typeof customerFormSchema>>;
   onSubmit: (values: z.infer<typeof customerFormSchema>) => void;
   onCancel: () => void;
+  isLoading: boolean;
 };
 
-const CustomerForm = ({ form, onSubmit, onCancel }: CustomerFormProps) => {
+const CustomerForm = ({ form, onSubmit, onCancel, isLoading }: CustomerFormProps) => {
   return (
     <Form {...form}>
       <form
@@ -120,12 +122,12 @@ const CustomerForm = ({ form, onSubmit, onCancel }: CustomerFormProps) => {
           >
             Hủy
           </Button>
-          <Button
-            className='px-4'
-            type='submit'
+          <AsyncButton
+            isLoading={isLoading}
+            onClick={() => form.handleSubmit(onSubmit)}
           >
             Lưu
-          </Button>
+          </AsyncButton>
         </div>
       </form>
     </Form>

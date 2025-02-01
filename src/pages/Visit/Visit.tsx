@@ -5,6 +5,8 @@ import CreateVisitButton from './CreateVisitButton';
 import { useListVisits } from '@/hooks/data/useListVisits';
 import { Badge } from '@/components/ui/badge';
 import { useCustomerModal } from '@/contexts/CustomerModalContext';
+import TableLoading from '@/components/Table/TableLoading';
+import TableEmpty from '@/components/Table/TableEmpty';
 
 const VisitStatusSettings = {
   NEW: {
@@ -26,7 +28,7 @@ const VisitStatusSettings = {
 };
 
 const VisitsPage = () => {
-  const { visits, pagination } = useListVisits();
+  const { visits, pagination, isLoading } = useListVisits();
   const { openCustomerModal } = useCustomerModal();
 
   return (
@@ -45,7 +47,7 @@ const VisitsPage = () => {
             <div className='flex items-center gap-4 flex-1 max-w-md'>
               <div className='text-sm font-medium text-muted-foreground whitespace-nowrap w-48'>
                 <span className='px-2 py-2 rounded-sm bg-blue-300 mr-4' />
-                <span className='text-lg font-semibold'>{pagination?.total} Lượt khám</span>
+                <span className='text-lg font-semibold'>{pagination?.total ?? '-'} Lượt khám</span>
               </div>
             </div>
           </div>
@@ -61,28 +63,32 @@ const VisitsPage = () => {
               <TableHead>Ngày tạo</TableHead>
             </TableRow>
           </TableHeader>
-          <TableBody>
-            {visits?.map((visit) => (
-              <TableRow
-                key={visit.id}
-                className='cursor-pointer hover:bg-gray-100'
-                onClick={() => openCustomerModal(visit.customer.id)}
-              >
-                <TableCell className='font-medium'>{visit.customer.name}</TableCell>
-                <TableCell>
-                  <div>{visit.customer.parentName}</div>
-                  <div className='text-sm text-gray-500'>{visit.customer.parentPhone}</div>
-                </TableCell>
-                <TableCell>
-                  <Badge className={VisitStatusSettings[visit.status].color}>
-                    {VisitStatusSettings[visit.status].text}
-                  </Badge>
-                </TableCell>
-                <TableCell>{visit.creatorName}</TableCell>
-                <TableCell>{new Date(visit.createdAt).toLocaleDateString('vi-VN')}</TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
+          {isLoading && <TableLoading colSpan={5} />}
+          {!isLoading && visits && visits.length === 0 && <TableEmpty colSpan={5} />}
+          {!isLoading && visits && visits.length > 0 && (
+            <TableBody>
+              {visits?.map((visit) => (
+                <TableRow
+                  key={visit.id}
+                  className='cursor-pointer hover:bg-gray-100'
+                  onClick={() => openCustomerModal(visit.customer.id)}
+                >
+                  <TableCell className='font-medium'>{visit.customer.name}</TableCell>
+                  <TableCell>
+                    <div>{visit.customer.parentName}</div>
+                    <div className='text-sm text-gray-500'>{visit.customer.parentPhone}</div>
+                  </TableCell>
+                  <TableCell>
+                    <Badge className={VisitStatusSettings[visit.status].color}>
+                      {VisitStatusSettings[visit.status].text}
+                    </Badge>
+                  </TableCell>
+                  <TableCell>{visit.creatorName}</TableCell>
+                  <TableCell>{new Date(visit.createdAt).toLocaleDateString('vi-VN')}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          )}
         </Table>
         <CustomPagination
           currentPage={pagination?.page || 1}

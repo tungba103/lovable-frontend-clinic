@@ -5,14 +5,16 @@ import { UseFormReturn } from 'react-hook-form';
 import { serviceFormSchema } from '@/validations/ServiceSchema';
 import { z } from 'zod';
 import { useListServiceCategories } from '@/hooks/data/useListServiceCategories';
+import AsyncButton from '@/components/AsyncButton';
 
 type ServiceFormProps = {
   form: UseFormReturn<z.infer<typeof serviceFormSchema>>;
   onSubmit: (values: z.infer<typeof serviceFormSchema>) => void;
   onCancel: () => void;
+  isLoading: boolean;
 };
 
-const ServiceForm = ({ form, onSubmit, onCancel }: ServiceFormProps) => {
+const ServiceForm = ({ form, onSubmit, onCancel, isLoading }: ServiceFormProps) => {
   const { serviceCategories } = useListServiceCategories();
 
   return (
@@ -71,10 +73,15 @@ const ServiceForm = ({ form, onSubmit, onCancel }: ServiceFormProps) => {
               <FormLabel>Giá</FormLabel>
               <FormControl>
                 <Input
-                  type='number'
-                  placeholder='100000'
+                  type='text'
+                  placeholder='100,000 VND'
                   {...field}
-                  onChange={(e) => field.onChange(Number(e.target.value))}
+                  value={field.value ? `${field.value.toLocaleString('vi-VN')}` : ''}
+                  onChange={(e) => {
+                    const rawValue = e.target.value.replace(/[^\d]/g, '');
+                    const value = parseInt(rawValue, 10);
+                    field.onChange(isNaN(value) ? 0 : value);
+                  }}
                 />
               </FormControl>
             </FormItem>
@@ -95,6 +102,26 @@ const ServiceForm = ({ form, onSubmit, onCancel }: ServiceFormProps) => {
             </FormItem>
           )}
         />
+        <FormField
+          control={form.control}
+          name='status'
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Trạng thái</FormLabel>
+              <FormControl>
+                <select
+                  className='w-full p-2 border rounded-md'
+                  {...field}
+                  value={field.value || ''}
+                >
+                  <option value=''>Chọn trạng thái</option>
+                  <option value='ACTIVE'>Hoạt động</option>
+                  <option value='INACTIVE'>Không hoạt động</option>
+                </select>
+              </FormControl>
+            </FormItem>
+          )}
+        />
         <div className='flex justify-end gap-2'>
           <Button
             variant='outline'
@@ -104,12 +131,12 @@ const ServiceForm = ({ form, onSubmit, onCancel }: ServiceFormProps) => {
           >
             Hủy
           </Button>
-          <Button
-            className='px-4'
-            type='submit'
+          <AsyncButton
+            isLoading={isLoading}
+            onClick={() => form.handleSubmit(onSubmit)}
           >
             Lưu
-          </Button>
+          </AsyncButton>
         </div>
       </form>
     </Form>

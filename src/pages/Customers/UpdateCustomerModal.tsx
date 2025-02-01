@@ -58,6 +58,7 @@ const UpdateCustomerModal = ({ customer }: IProps) => {
               form={form}
               onSubmit={handleSubmit}
               onCancel={() => setOpen(false)}
+              isLoading={updateMutation.isPending}
             />
           </DialogHeader>
         </DialogContent>

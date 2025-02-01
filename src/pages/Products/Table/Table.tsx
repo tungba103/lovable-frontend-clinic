@@ -2,9 +2,12 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import CustomPagination from '@/components/CustomPagination';
 import UpdateProductModal from '../UpdateProductModal';
 import { useListProducts } from '@/hooks/data/useListProducts';
+import TableLoading from '@/components/Table/TableLoading';
+import TableEmpty from '@/components/Table/TableEmpty';
+import { customFormatDate } from '@/utils/format-date.util';
 
 const CustomTable = () => {
-  const { products, pagination } = useListProducts();
+  const { products, isLoading, pagination } = useListProducts();
 
   return (
     <div className='p-2 bg-white rounded-lg shadow-lg'>
@@ -13,7 +16,7 @@ const CustomTable = () => {
           <div className='flex items-center gap-4 flex-1 max-w-md'>
             <div className='text-sm font-medium text-muted-foreground whitespace-nowrap w-48'>
               <span className='px-2 py-2 rounded-sm bg-blue-300 mr-4' />
-              <span className='text-lg font-semibold'>{pagination?.total} Thuốc</span>
+              <span className='text-lg font-semibold'>{pagination?.total ?? '-'} Thuốc</span>
             </div>
           </div>
         </div>
@@ -22,7 +25,6 @@ const CustomTable = () => {
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead>Mã thuốc</TableHead>
             <TableHead>Tên thuốc</TableHead>
             <TableHead>Danh mục</TableHead>
             <TableHead>Giá</TableHead>
@@ -31,29 +33,32 @@ const CustomTable = () => {
             <TableHead></TableHead>
           </TableRow>
         </TableHeader>
-        <TableBody>
-          {products?.map((product) => (
-            <TableRow key={product.id}>
-              <TableCell>{product.code}</TableCell>
-              <TableCell className='font-medium'>{product.name}</TableCell>
-              <TableCell>{product.productCategory.name}</TableCell>
-              <TableCell>{product.price.toLocaleString('vi-VN')} đ</TableCell>
-              <TableCell>
-                <span
-                  className={`px-2 py-1 rounded-full text-xs ${
-                    product.status === 'ACTIVE' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
-                  }`}
-                >
-                  {product.status === 'ACTIVE' ? 'Hoạt động' : 'Không hoạt động'}
-                </span>
-              </TableCell>
-              <TableCell>{new Date(product.createdAt).toLocaleDateString('vi-VN')}</TableCell>
-              <TableCell>
-                <UpdateProductModal product={product} />
-              </TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
+        {isLoading && <TableLoading colSpan={6} />}
+        {!isLoading && products && products.length === 0 && <TableEmpty colSpan={6} />}
+        {!isLoading && products && products.length > 0 && (
+          <TableBody>
+            {products?.map((product) => (
+              <TableRow key={product.id}>
+                <TableCell className='font-medium'>{product.name}</TableCell>
+                <TableCell>{product.productCategory.name}</TableCell>
+                <TableCell>{product.price.toLocaleString('vi-VN')} đ</TableCell>
+                <TableCell>
+                  <span
+                    className={`px-2 py-1 rounded-full text-xs ${
+                      product.status === 'ACTIVE' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+                    }`}
+                  >
+                    {product.status === 'ACTIVE' ? 'Hoạt động' : 'Không hoạt động'}
+                  </span>
+                </TableCell>
+                <TableCell>{customFormatDate(new Date(product.createdAt))}</TableCell>
+                <TableCell>
+                  <UpdateProductModal product={product} />
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        )}
       </Table>
       <CustomPagination
         currentPage={pagination?.page || 1}

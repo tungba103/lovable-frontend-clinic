@@ -56,6 +56,7 @@ const UpdateServiceCategoryModal = ({ category }: IProps) => {
             form={form}
             onSubmit={handleSubmit}
             onCancel={() => setOpen(false)}
+            isLoading={updateMutation.isPending}
           />
         </DialogHeader>
       </DialogContent>

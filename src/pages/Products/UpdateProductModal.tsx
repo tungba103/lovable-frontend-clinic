@@ -24,6 +24,7 @@ const UpdateProductModal = ({ product }: IProps) => {
       productCategoryId: product.productCategoryId,
       price: product.price,
       description: product.description,
+      status: product.status,
     },
   });
 
@@ -58,6 +59,7 @@ const UpdateProductModal = ({ product }: IProps) => {
             form={form}
             onSubmit={handleSubmit}
             onCancel={() => setOpen(false)}
+            isLoading={updateMutation.isPending}
           />
         </DialogHeader>
       </DialogContent>

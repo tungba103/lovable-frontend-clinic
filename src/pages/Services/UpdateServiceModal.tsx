@@ -24,6 +24,7 @@ const UpdateServiceModal = ({ service }: IProps) => {
       serviceCategoryId: service.serviceCategoryId,
       price: service.price,
       description: service.description,
+      status: service.status,
     },
   });
 
@@ -58,6 +59,7 @@ const UpdateServiceModal = ({ service }: IProps) => {
             form={form}
             onSubmit={handleSubmit}
             onCancel={() => setOpen(false)}
+            isLoading={updateMutation.isPending}
           />
         </DialogHeader>
       </DialogContent>

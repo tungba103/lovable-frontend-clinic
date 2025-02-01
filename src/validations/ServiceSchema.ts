@@ -11,4 +11,5 @@ export const serviceFormSchema = z.object({
     message: 'Giá dịch vụ không được âm.',
   }),
   description: z.string().optional(),
+  status: z.enum(['ACTIVE', 'INACTIVE']),
 }); 

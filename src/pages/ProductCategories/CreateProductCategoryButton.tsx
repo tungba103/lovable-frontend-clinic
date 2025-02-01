@@ -53,6 +53,7 @@ const CreateProductCategoryButton = () => {
             form={form}
             onSubmit={onSubmit}
             onCancel={() => setOpen(false)}
+            isLoading={createMutation.isPending}
           />
         </DialogHeader>
       </DialogContent>

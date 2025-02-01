@@ -1,6 +1,7 @@
 import { useListVisitsByCustomerId } from '@/hooks/data/useListVisitsByCustomerId';
 import { useVisit } from '@/contexts/VisitContext';
 import { useEffect } from 'react';
+import { customFormatDate } from '@/utils/format-date.util';
 
 interface VisitHistoryProps {
   customerId: number;
@@ -37,7 +38,7 @@ const VisitHistory = ({ customerId }: VisitHistoryProps) => {
                 }`}
                 onClick={() => setSelectedVisitId(visit.id)}
               >
-                <td className='p-2'>{new Date(visit.createdAt).toLocaleDateString('vi-VN')}</td>
+                <td className='p-2'>{customFormatDate(new Date(visit.createdAt))}</td>
                 <td className='p-2'>{visit.creatorName || 'N/A'}</td>
                 <td className='p-2'>{visit.totalAmount?.toLocaleString('vi-VN') || 0} VND</td>
               </tr>
