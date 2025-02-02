@@ -21,16 +21,26 @@ const ServiceForm = ({ form, isLoading, disabled }: ServiceFormProps) => {
   const addServiceItem = (selectedService: Service) => {
     if (!selectedService) return;
 
-    const newItem: ServiceUsageItem = {
-      serviceId: selectedService.id,
-      serviceName: selectedService.name,
-      quantity: 1,
-      price: selectedService.price,
-      discount: 0,
-    };
-
     const currentItems = form.getValues('serviceUsage.serviceUsageItems') || [];
-    form.setValue('serviceUsage.serviceUsageItems', [...currentItems, newItem]);
+    const existingItemIndex = currentItems.findIndex((item) => item.serviceId === selectedService.id);
+
+    if (existingItemIndex >= 0) {
+      // If product exists, increment quantity
+      currentItems[existingItemIndex].quantity += 1;
+      form.setValue('serviceUsage.serviceUsageItems', currentItems);
+    } else {
+      // If product doesn't exist, add new item
+      const newItem: ServiceUsageItem = {
+        serviceId: selectedService.id,
+        serviceName: selectedService.name,
+        quantity: 1,
+        price: selectedService.price,
+        discount: 0,
+      };
+
+      form.setValue('serviceUsage.serviceUsageItems', [...currentItems, newItem]);
+    }
+
     updateServiceTotalAmount();
   };
 
@@ -131,6 +141,7 @@ const ServiceForm = ({ form, isLoading, disabled }: ServiceFormProps) => {
                       <td className='p-2'>{(item.price * item.quantity).toLocaleString('vi-VN')}</td>
                       <td className='p-2 text-center'>
                         <Button
+                          type='button'
                           variant='ghost'
                           size='sm'
                           onClick={() => removeServiceItem(index)}
@@ -144,14 +155,15 @@ const ServiceForm = ({ form, isLoading, disabled }: ServiceFormProps) => {
                 </tbody>
               )}
               <tfoot className='border-t'>
-                <tr>
+                <tr className='bg-blue-200'>
+                  <td colSpan={1}></td>
                   <td
-                    className='p-2 font-medium'
+                    className='p-2 font-bold'
                     colSpan={3}
                   >
                     Tổng tiền:
                   </td>
-                  <td className='p-2 font-medium'>
+                  <td className='p-2 font-bold'>
                     {form.watch('serviceUsage.totalAmount')?.toLocaleString('vi-VN') || 0} VND
                   </td>
                   <td></td>

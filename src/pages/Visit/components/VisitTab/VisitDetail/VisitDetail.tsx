@@ -42,6 +42,10 @@ const VisitDetail = () => {
           totalDiscount: data.prescription.prescriptionItems.reduce((acc, item) => acc + item.discount, 0),
           prescriptionItems: data.prescription.prescriptionItems.map((item) => ({
             ...item,
+            morningDosage: item.morningDosage || 0,
+            noonDosage: item.noonDosage || 0,
+            afternoonDosage: item.afternoonDosage || 0,
+            eveningDosage: item.eveningDosage || 0,
             usageInstructions: item.usageInstructions || '',
             doctorNotes: item.doctorNotes || '',
           })),

@@ -35,6 +35,20 @@ const CreateCustomerButton = () => {
       onSuccess: () => {
         setOpen(false);
       },
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      onError: (error: any) => {
+        switch (error.response?.data?.message) {
+          case 'Name And Parent phone number already exists':
+            form.setError('name', { message: 'Bệnh nhân đã tồn tại' });
+            form.setError('parentPhone', { message: 'Số điện thoại đã tồn tại' });
+            break;
+          case 'Name And Birth Date already exists':
+            form.setError('name', { message: 'Bệnh nhân đã tồn tại' });
+            form.setError('birthDate', { message: 'Ngày sinh đã tồn tại' });
+            break;
+          default:
+        }
+      },
     });
   }
 

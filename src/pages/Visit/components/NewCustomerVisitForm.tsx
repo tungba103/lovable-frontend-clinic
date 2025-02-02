@@ -18,7 +18,7 @@ const NewCustomerVisitForm = ({ form, onSubmit, onCancel, isLoading }: NewCustom
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className='space-y-4'
+        className='space-y-4 h-[560px]'
       >
         <FormField
           control={form.control}

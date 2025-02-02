@@ -7,7 +7,7 @@ import TableLoading from '@/components/Table/TableLoading';
 import { customFormatDate } from '@/utils/format-date.util';
 
 const CustomTable = () => {
-  const { services, pagination, isLoading } = useListServices();
+  const { data: services, pagination, isLoading } = useListServices();
 
   return (
     <div className='p-2 bg-white rounded-lg shadow-lg'>

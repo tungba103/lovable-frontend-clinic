@@ -12,20 +12,25 @@ interface UseListCustomersProps {
   useQueryString?: boolean;
 }
 
-export const useListCustomers = ({ page: pageParam = '1', pageSize: pageSizeParam = '10', search: searchParam, useQueryString: useQueryStringParam = true }: UseListCustomersProps = {}) => {
+export const useListCustomers = ({ page: pageParam, pageSize: pageSizeParam, search: searchParam, useQueryString: useQueryStringParam = true }: UseListCustomersProps = {}) => {
   const { queryString, setQueryString } = useQueryString();
 
   const { page, pageSize, search } = queryString;
 
-  const pageQuery = pageParam || page;
-  const pageSizeQuery = pageSizeParam || pageSize;
-  const searchQuery = searchParam || search;
+  const pageQuery = pageParam ?? page ?? '1';
+  const pageSizeQuery = pageSizeParam ?? pageSize ?? '10';
+  const searchQuery = searchParam ?? search;
 
   const parseData = (data: BaseListDataResponse<Customer>) => {
     const { data: queryCustomers, page, pageSize, total, totalPage } = data.result;
 
     const customers = queryCustomers.map((customer) => ({
       ...customer,
+      birthDate: customer.birth_date,
+      createdAt: customer.created_at,
+      updatedAt: customer.updated_at,
+      parentName: customer.parent_name,
+      parentPhone: customer.parent_phone,
     }));
 
     const pagination = {
@@ -39,12 +44,14 @@ export const useListCustomers = ({ page: pageParam = '1', pageSize: pageSizePara
   }
 
   useEffect(() => {
+    console.log('useEffect', useQueryStringParam, page, pageSize);
     if(useQueryStringParam) {
-      if(!pageQuery && !pageSizeQuery) {
+      if(!page && !pageSize) {
+        console.log('setQueryString');
         setQueryString({ page: '1', pageSize: '10'});
       }
     }
-  }, [setQueryString,pageQuery, pageSizeQuery, useQueryStringParam]);
+  }, [setQueryString,page, pageSize, useQueryStringParam]);
   
   const { data, isLoading } = useQuery({
     queryKey: ['customers', pageQuery, pageSizeQuery, searchQuery],

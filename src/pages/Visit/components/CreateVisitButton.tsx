@@ -86,7 +86,7 @@ const CreateVisitButton = () => {
           existingCustomerForm.reset();
           newCustomerForm.reset();
         }}
-        onInteractOutside={(e) => e.preventDefault()}
+        // onInteractOutside={(e) => e.preventDefault()}
       >
         <DialogHeader>
           <DialogTitle className='mb-8'>
@@ -94,12 +94,12 @@ const CreateVisitButton = () => {
             Thêm lượt khám mới
           </DialogTitle>
           <Tabs
-            defaultValue='existing'
+            defaultValue='new'
             className='w-full'
           >
             <TabsList className='grid w-full grid-cols-2'>
-              <TabsTrigger value='existing'>Bệnh nhân cũ</TabsTrigger>
               <TabsTrigger value='new'>Bệnh nhân mới</TabsTrigger>
+              <TabsTrigger value='existing'>Bệnh nhân cũ</TabsTrigger>
             </TabsList>
             <TabsContent value='existing'>
               <ExistingCustomerVisitForm

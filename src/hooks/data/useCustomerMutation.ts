@@ -25,7 +25,7 @@ export const useCustomerMutation = () => {
 
     },
     onError: (err) => {
-      toast.error('Tạo khách hàng thất bại');
+      toast.error('Bệnh nhân đã tồn tại');
       console.warn(err);
     },
   });

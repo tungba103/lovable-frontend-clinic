@@ -6,9 +6,10 @@ import { useCustomerModal } from '@/contexts/CustomerModal/CustomerModalContext'
 import TableLoading from '@/components/Table/TableLoading';
 import TableEmpty from '@/components/Table/TableEmpty';
 import { customFormatDate } from '@/utils/format-date.util';
+import { Customer } from '@/types/api/customer';
 
 const CustomTable = () => {
-  const { customers, isLoading, pagination } = useListCustomers();
+  const { data: customers, isLoading, pagination } = useListCustomers();
   const { openCustomerModal } = useCustomerModal();
 
   return (
@@ -48,15 +49,15 @@ const CustomTable = () => {
               >
                 <TableCell className='font-medium'>{customer.name}</TableCell>
                 <TableCell>{customer.gender === 'MALE' ? 'Nam' : 'Nữ'}</TableCell>
-                <TableCell>{customFormatDate(new Date(customer.birthDate))}</TableCell>
+                <TableCell>{customer.birthDate ? customFormatDate(new Date(customer.birthDate)) : '-'}</TableCell>
                 <TableCell>
                   <div>{customer.parentName}</div>
                   <div className='text-sm text-gray-500'>{customer.parentPhone}</div>
                 </TableCell>
                 <TableCell>{customer.address}</TableCell>
-                <TableCell>{customFormatDate(new Date(customer.createdAt))}</TableCell>
+                <TableCell>{customer.createdAt ? customFormatDate(new Date(customer.createdAt)) : '-'}</TableCell>
                 <TableCell onClick={(e) => e.stopPropagation()}>
-                  <UpdateCustomerModal customer={customer} />
+                  <UpdateCustomerModal customer={customer as Customer} />
                 </TableCell>
               </TableRow>
             ))}

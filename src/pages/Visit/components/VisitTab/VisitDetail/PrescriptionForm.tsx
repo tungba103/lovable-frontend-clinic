@@ -4,12 +4,13 @@ import { Button } from '@/components/ui/button';
 import { UseFormReturn } from 'react-hook-form';
 import { visitDetailSchema } from '@/validations/VisitDetailSchema';
 import { z } from 'zod';
-import { CircleX } from 'lucide-react';
+import { CircleX, ChevronDown, ChevronRight } from 'lucide-react';
 import { useListProducts } from '@/hooks/data/useListProducts';
 import { PrescriptionItem } from '@/types/api/visit';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Combobox } from '@/components/RHFInput/Combobox';
 import { Product } from '@/types/api/product';
+import { useState, Fragment } from 'react';
 
 type PrescriptionFormProps = {
   form: UseFormReturn<z.infer<typeof visitDetailSchema>>;
@@ -18,30 +19,42 @@ type PrescriptionFormProps = {
 };
 
 const PrescriptionForm = ({ form, isLoading, disabled }: PrescriptionFormProps) => {
-  // const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+  const [expandedRows, setExpandedRows] = useState<number[]>([]);
+
+  const toggleRow = (index: number) => {
+    setExpandedRows((prev) => (prev.includes(index) ? prev.filter((i) => i !== index) : [...prev, index]));
+  };
 
   const addPrescriptionItem = (selectedProduct: Product) => {
     console.log('selectedProduct', selectedProduct);
     if (!selectedProduct) return;
 
-    const newItem: PrescriptionItem = {
-      productId: selectedProduct?.id ?? 0,
-      productName: selectedProduct?.name ?? '',
-      quantity: 1,
-      price: selectedProduct?.price ?? 0,
-      discount: 0,
-      morningDosage: 0,
-      noonDosage: 0,
-      afternoonDosage: 0,
-      eveningDosage: 0,
-      usageInstructions: '',
-      doctorNotes: '',
-    };
-
     const currentItems = form.getValues('prescription.prescriptionItems') || [];
-    form.setValue('prescription.prescriptionItems', [...currentItems, newItem]);
+    const existingItemIndex = currentItems.findIndex((item) => item.productId === selectedProduct.id);
+
+    if (existingItemIndex >= 0) {
+      // If product exists, increment quantity
+      currentItems[existingItemIndex].quantity += 1;
+      form.setValue('prescription.prescriptionItems', currentItems);
+    } else {
+      // If product doesn't exist, add new item
+      const newItem: PrescriptionItem = {
+        productId: selectedProduct.id,
+        productName: selectedProduct.name,
+        quantity: 1,
+        price: selectedProduct.price,
+        discount: 0,
+        morningDosage: 0,
+        noonDosage: 0,
+        afternoonDosage: 0,
+        eveningDosage: 0,
+        usageInstructions: '',
+        doctorNotes: '',
+      };
+      form.setValue('prescription.prescriptionItems', [...currentItems, newItem]);
+    }
+
     updateTotalAmount();
-    // setSelectedProduct(null);
   };
 
   const removePrescriptionItem = (index: number) => {
@@ -130,47 +143,173 @@ const PrescriptionForm = ({ form, isLoading, disabled }: PrescriptionFormProps) 
               ) : (
                 <tbody>
                   {form.watch('prescription.prescriptionItems')?.map((item, index) => (
-                    <tr
-                      key={index}
-                      className='border-t'
-                    >
-                      <td className='p-2'>{item.productId}</td>
-                      <td className='p-2'>{item.productName}</td>
-                      <td className='p-2'>
-                        <Input
-                          type='number'
-                          min='1'
-                          value={item.quantity}
-                          className='w-20'
-                          onChange={(e) => updateQuantity(index, Number(e.target.value))}
-                          disabled={disabled}
-                        />
-                      </td>
-                      <td className='p-2'>{item.price.toLocaleString('vi-VN')}</td>
-                      <td className='p-2'>{(item.price * item.quantity).toLocaleString('vi-VN')}</td>
-                      <td className='p-2 text-center'>
-                        <Button
-                          variant='ghost'
-                          size='sm'
-                          onClick={() => removePrescriptionItem(index)}
-                          disabled={disabled}
-                        >
-                          <CircleX />
-                        </Button>
-                      </td>
-                    </tr>
+                    <Fragment key={index}>
+                      <tr
+                        className={`border-t cursor-pointer hover:bg-gray-50 ${
+                          expandedRows.includes(index) ? 'bg-gray-50' : ''
+                        }`}
+                        onClick={() => toggleRow(index)}
+                      >
+                        <td className='p-2'>
+                          <div className='flex items-center gap-2'>
+                            {expandedRows.includes(index) ? (
+                              <ChevronDown className='w-5 h-5' />
+                            ) : (
+                              <ChevronRight className='w-5 h-5' />
+                            )}
+                            {item.productId}
+                          </div>
+                        </td>
+                        <td className='p-2'>{item.productName}</td>
+                        <td className='p-2'>
+                          <Input
+                            type='number'
+                            min='1'
+                            value={item.quantity}
+                            className='w-20'
+                            onChange={(e) => {
+                              e.stopPropagation();
+                              updateQuantity(index, Number(e.target.value));
+                            }}
+                            disabled={disabled}
+                            onClick={(e) => e.stopPropagation()}
+                          />
+                        </td>
+                        <td className='p-2'>{item.price.toLocaleString('vi-VN')}</td>
+                        <td className='p-2'>{(item.price * item.quantity).toLocaleString('vi-VN')}</td>
+                        <td className='p-2 text-center'>
+                          <Button
+                            type='button'
+                            variant='ghost'
+                            size='sm'
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              removePrescriptionItem(index);
+                            }}
+                            disabled={disabled}
+                          >
+                            <CircleX />
+                          </Button>
+                        </td>
+                      </tr>
+                      {expandedRows.includes(index) && (
+                        <tr className='bg-gray-50 w-full'>
+                          <td
+                            colSpan={6}
+                            className='p-4'
+                          >
+                            <div className='space-y-4'>
+                              <div className='flex items-center gap-20'>
+                                <div className='flex items-center gap-2'>
+                                  <label className='w-16'>Sáng:</label>
+                                  <Input
+                                    type='number'
+                                    min='0'
+                                    className='w-20'
+                                    value={item.morningDosage}
+                                    onChange={(e) => {
+                                      const currentItems = form.getValues('prescription.prescriptionItems');
+                                      currentItems[index].morningDosage = Number(e.target.value);
+                                      form.setValue('prescription.prescriptionItems', currentItems);
+                                    }}
+                                    disabled={disabled}
+                                  />
+                                </div>
+                                <div className='flex items-center gap-2'>
+                                  <label className='w-16'>Trưa:</label>
+                                  <Input
+                                    type='number'
+                                    min='0'
+                                    className='w-20'
+                                    value={item.noonDosage}
+                                    onChange={(e) => {
+                                      const currentItems = form.getValues('prescription.prescriptionItems');
+                                      currentItems[index].noonDosage = Number(e.target.value);
+                                      form.setValue('prescription.prescriptionItems', currentItems);
+                                    }}
+                                    disabled={disabled}
+                                  />
+                                </div>
+                                <div className='flex items-center gap-2'>
+                                  <label className='w-16'>Chiều:</label>
+                                  <Input
+                                    type='number'
+                                    min='0'
+                                    className='w-20'
+                                    value={item.afternoonDosage}
+                                    onChange={(e) => {
+                                      const currentItems = form.getValues('prescription.prescriptionItems');
+                                      currentItems[index].afternoonDosage = Number(e.target.value);
+                                      form.setValue('prescription.prescriptionItems', currentItems);
+                                    }}
+                                    disabled={disabled}
+                                  />
+                                </div>
+                                <div className='flex items-center gap-2'>
+                                  <label className='w-16'>Tối:</label>
+                                  <Input
+                                    type='number'
+                                    min='0'
+                                    className='w-20'
+                                    value={item.eveningDosage}
+                                    onChange={(e) => {
+                                      const currentItems = form.getValues('prescription.prescriptionItems');
+                                      currentItems[index].eveningDosage = Number(e.target.value);
+                                      form.setValue('prescription.prescriptionItems', currentItems);
+                                    }}
+                                    disabled={disabled}
+                                  />
+                                </div>
+                              </div>
+
+                              <div className='space-y-2'>
+                                <div className='flex items-center gap-2'>
+                                  <label className='w-32'>Hướng dẫn dùng:</label>
+                                  <Input
+                                    className='w-[800px]'
+                                    value={item.usageInstructions}
+                                    onChange={(e) => {
+                                      const currentItems = form.getValues('prescription.prescriptionItems');
+                                      currentItems[index].usageInstructions = e.target.value;
+                                      form.setValue('prescription.prescriptionItems', currentItems);
+                                    }}
+                                    disabled={disabled}
+                                    placeholder='Nhập hướng dẫn sử dụng thuốc...'
+                                  />
+                                </div>
+                                <div className='flex items-center gap-2'>
+                                  <label className='w-32'>Ghi chú:</label>
+                                  <Input
+                                    className='w-[800px]'
+                                    value={item.doctorNotes}
+                                    onChange={(e) => {
+                                      const currentItems = form.getValues('prescription.prescriptionItems');
+                                      currentItems[index].doctorNotes = e.target.value;
+                                      form.setValue('prescription.prescriptionItems', currentItems);
+                                    }}
+                                    disabled={disabled}
+                                    placeholder='Nhập ghi chú của bác sĩ...'
+                                  />
+                                </div>
+                              </div>
+                            </div>
+                          </td>
+                        </tr>
+                      )}
+                    </Fragment>
                   ))}
                 </tbody>
               )}
               <tfoot className='border-t'>
-                <tr>
+                <tr className='bg-blue-200'>
+                  <td colSpan={1}></td>
                   <td
-                    className='p-2 font-medium'
+                    className='p-2 font-bold'
                     colSpan={3}
                   >
-                    Tổng tiền:
+                    Tổng tiền
                   </td>
-                  <td className='p-2 font-medium'>
+                  <td className='p-2 font-bold'>
                     {form.watch('prescription.totalAmount')?.toLocaleString('vi-VN') || 0} VND
                   </td>
                   <td></td>
