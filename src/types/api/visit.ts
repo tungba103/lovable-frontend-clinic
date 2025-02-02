@@ -19,12 +19,13 @@ export interface Visit {
   diagnosis: string;
   symptoms: string;
   personalMedicalHistory: string;
-  familyMedicalHistory: string;
   reExaminationTime: string;
   advice: string;
 
   prescription: Prescription;
   serviceUsage: ServiceUsage;
+
+  countByCustomer: number;
 
   isActive: boolean;
   createdAt: string;
@@ -34,7 +35,7 @@ export interface Visit {
 export interface Prescription {
   totalAmount: number;
   totalDiscount: number;
-  PrescriptionItem: PrescriptionItem[];
+  prescriptionItems: PrescriptionItem[];
 }
 
 export interface PrescriptionItem {
@@ -47,16 +48,19 @@ export interface PrescriptionItem {
   noonDosage: number;
   afternoonDosage: number;
   eveningDosage: number;
+  usageInstructions: string;
+  doctorNotes: string;
 }
 
 export interface ServiceUsage {
   totalAmount: number;
   totalDiscount: number;
-  ServiceUsageItem: ServiceUsageItem[];
+  serviceUsageItems: ServiceUsageItem[];
 }
 
 export interface ServiceUsageItem {
   serviceId: number;
+  serviceName: string;
   quantity: number;
   price: number;
   discount: number;

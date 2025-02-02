@@ -2,7 +2,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { useListCustomers } from '@/hooks/data/useListCustomers';
 import CustomPagination from '@/components/CustomPagination';
 import UpdateCustomerModal from '../UpdateCustomerModal';
-import { useCustomerModal } from '@/contexts/CustomerModalContext';
+import { useCustomerModal } from '@/contexts/CustomerModal/CustomerModalContext';
 import TableLoading from '@/components/Table/TableLoading';
 import TableEmpty from '@/components/Table/TableEmpty';
 import { customFormatDate } from '@/utils/format-date.util';

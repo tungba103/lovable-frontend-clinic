@@ -1,28 +1,32 @@
 import { useListVisitsByCustomerId } from '@/hooks/data/useListVisitsByCustomerId';
-import { useVisit } from '@/contexts/VisitContext';
 import { useEffect } from 'react';
 import { customFormatDate } from '@/utils/format-date.util';
+import { Skeleton } from '@/components/ui/skeleton';
+import { useVisitContext } from '../useVisitContext';
 
 interface VisitHistoryProps {
   customerId: number;
 }
 
 const VisitHistory = ({ customerId }: VisitHistoryProps) => {
-  const { visits: customerVisits } = useListVisitsByCustomerId({ customerId });
-  const { selectedVisitId, setSelectedVisitId } = useVisit();
+  const { visits: customerVisits, isLoading } = useListVisitsByCustomerId({ customerId });
+  const { selectedVisitId, setSelectedVisitId } = useVisitContext();
 
   // Set the first visit as default when visits are loaded
   useEffect(() => {
-    if (customerVisits && customerVisits.length > 0) {
-      setSelectedVisitId(customerVisits[0].id);
-    }
-  }, [customerVisits, setSelectedVisitId]);
+    // console.log('[VisitHistory] Set default visit', isLoading);
+    if (isLoading) return;
+    setSelectedVisitId(customerVisits?.[0]?.id || null);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isLoading]);
+
+  // console.log('[VisitHistory] ----------------------');
 
   return (
-    <div className='w-96'>
-      <div className='h-[88vh] overflow-y-auto'>
+    <div className='w-96 rounded-lg'>
+      <div className='h-[88vh] overflow-y-auto rounded-lg'>
         <table className='w-full'>
-          <thead className='bg-blue-200 sticky top-0'>
+          <thead className='bg-blue-200 sticky top-0 rounded-lg'>
             <tr>
               <th className='text-left font-medium p-2'>Ngày đến</th>
               <th className='text-left font-medium p-2'>Bác sĩ</th>
@@ -30,6 +34,17 @@ const VisitHistory = ({ customerId }: VisitHistoryProps) => {
             </tr>
           </thead>
           <tbody>
+            {isLoading &&
+              Array.from({ length: 10 }).map((_, index) => (
+                <tr key={index}>
+                  <td
+                    colSpan={3}
+                    className='text-center p-2'
+                  >
+                    <Skeleton className='h-8 w-full' />
+                  </td>
+                </tr>
+              ))}
             {customerVisits?.map((visit) => (
               <tr
                 key={visit.id}

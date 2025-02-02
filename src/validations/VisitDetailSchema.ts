@@ -10,7 +10,7 @@ export const visitDetailSchema = z.object({
   prescription: z.object({
     totalAmount: z.number().optional(),
     totalDiscount: z.number().optional(),
-    PrescriptionItem: z.array(z.object({
+    prescriptionItems: z.array(z.object({
       productId: z.number(),
       productName: z.string(),
       quantity: z.number().min(1),
@@ -27,7 +27,7 @@ export const visitDetailSchema = z.object({
   serviceUsage: z.object({
     totalAmount: z.number().optional(),
     totalDiscount: z.number().optional(),
-    ServiceUsageItem: z.array(z.object({
+    serviceUsageItems: z.array(z.object({
       serviceId: z.number(),
       serviceName: z.string(),
       quantity: z.number().min(1),

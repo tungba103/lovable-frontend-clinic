@@ -1,43 +1,40 @@
 import { useMemo } from 'react';
-import { URLSearchParamsInit, createSearchParams, useSearchParams } from 'react-router-dom';
+import { createSearchParams, useSearchParams } from 'react-router-dom';
 
 const useQueryString = () => {
   const [searchParams, setSearchParams] = useSearchParams();
-
-  const searchParamsObject: URLSearchParamsInit = useMemo(() => {
-    const searchParamsObject: URLSearchParamsInit = {};
-
-    [...searchParams].forEach(([key, value]) => {
-      if (searchParamsObject[key]) {
-        if (Array.isArray(searchParamsObject[key])) {
-          (searchParamsObject[key] as string[]).push(value);
+  
+  const queryString = useMemo(() => {
+    const params: Record<string, string | string[]> = {};
+    
+    for (const [key, value] of searchParams.entries()) {
+      const existing = params[key];
+      
+      if (existing) {
+        if (Array.isArray(existing)) {
+          existing.push(value);
         } else {
-          searchParamsObject[key] = [searchParamsObject[key] as string, value];
+          params[key] = [existing, value];
         }
-        return;
+      } else {
+        params[key] = value;
       }
+    }
+    
+    return params;
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchParams.toString()]); // Only re-run if the actual query string changes
 
-      searchParamsObject[key] = value;
-    });
-
-    return searchParamsObject;
-  }, [searchParams]);
-
-  const parseQueryString = (queryString: string) => {
-    const searchParams = createSearchParams(queryString);
-
-    return searchParams;
-  };
+  const parseQueryString = (queryStr: string) => createSearchParams(queryStr);
 
   return {
-    queryString: { ...searchParamsObject },
+    queryString,
     setQueryString: setSearchParams,
     parseQueryString,
   };
 };
 
 export type QueryString = ReturnType<typeof useQueryString>['queryString'];
-
 export type QueryParam = QueryString[keyof QueryString];
 
 export default useQueryString;

@@ -1,29 +1,29 @@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import CustomPagination from '@/components/CustomPagination';
 import SearchInput from '@/components/SearchInput';
-import CreateVisitButton from './CreateVisitButton';
+import CreateVisitButton from './components/CreateVisitButton';
 import { useListVisits } from '@/hooks/data/useListVisits';
 import { Badge } from '@/components/ui/badge';
-import { useCustomerModal } from '@/contexts/CustomerModalContext';
+import { useCustomerModal } from '@/contexts/CustomerModal/CustomerModalContext';
 import TableLoading from '@/components/Table/TableLoading';
 import TableEmpty from '@/components/Table/TableEmpty';
 
 const VisitStatusSettings = {
   NEW: {
-    color: 'bg-blue-500 text-white hover:bg-blue-600 text-sm px-2 py-0.5',
-    text: 'Mới',
+    color: 'bg-blue-400 text-white hover:bg-blue-400 text-sm px-2 py-0.5',
+    text: 'Chưa khám',
   },
   IN_PROGRESS: {
-    color: 'bg-orange-500 text-white hover:bg-orange-600 text-sm px-2 py-0.5',
-    text: 'Đang thực hiện',
+    color: 'bg-orange-400 text-white hover:bg-orange-400 text-sm px-2 py-0.5',
+    text: 'Đang khám',
   },
   COMPLETED: {
-    color: 'bg-green-500 text-white hover:bg-green-600 text-sm px-2 py-0.5',
-    text: 'Hoàn thành',
+    color: 'bg-green-400 text-white hover:bg-green-400 text-sm px-2 py-0.5',
+    text: 'Đã khám',
   },
   CANCELLED: {
-    color: 'bg-gray-500 text-white hover:bg-gray-600 text-sm px-2 py-0.5',
-    text: 'Hủy',
+    color: 'bg-gray-400 text-white hover:bg-gray-400 text-sm px-2 py-0.5',
+    text: 'Hủy khám',
   },
 };
 
@@ -73,7 +73,12 @@ const VisitsPage = () => {
                   className='cursor-pointer hover:bg-gray-100'
                   onClick={() => openCustomerModal(visit.customer.id)}
                 >
-                  <TableCell className='font-medium'>{visit.customer.name}</TableCell>
+                  <TableCell className='font-medium'>
+                    {visit.customer.name}{' '}
+                    {visit.countByCustomer === 1 && (
+                      <Badge className='bg-red-400 text-white hover:bg-red-400 text-sm px-2 ml-1 py-0.5'>Mới</Badge>
+                    )}
+                  </TableCell>
                   <TableCell>
                     <div>{visit.customer.parentName}</div>
                     <div className='text-sm text-gray-500'>{visit.customer.parentPhone}</div>

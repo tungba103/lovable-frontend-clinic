@@ -14,7 +14,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import Services from './pages/Services/Services';
 import ProductCategories from './pages/ProductCategories/ProductCategories';
 import ServiceCategories from './pages/ServiceCategories/ServiceCategories';
-import { CustomerModalProvider } from '@/contexts/CustomerModalContext';
+import { CustomerModalProvider } from '@/contexts/CustomerModal/CustomerModalProvider';
 
 const queryClient = new QueryClient({
   defaultOptions: {

@@ -1,10 +1,8 @@
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Separator } from '@/components/ui/separator';
 import { useCustomer } from '@/hooks/data/useCustomer';
-import VisitHistory from './components/VisitHistory';
-import VisitDetail from './components/VisitDetail';
-import { VisitProvider } from '@/contexts/VisitContext';
 import { customFormatDate } from '@/utils/format-date.util';
+import VisitTab from './VisitTab/VisitTab';
 
 interface CustomerModalProps {
   open: boolean;
@@ -19,6 +17,8 @@ const CustomerModal = ({ open, onOpenChange, customerId }: CustomerModalProps) =
     return <div>Loading...</div>;
   }
 
+  console.log('CustomerModal');
+
   return (
     <Dialog
       open={open}
@@ -32,12 +32,7 @@ const CustomerModal = ({ open, onOpenChange, customerId }: CustomerModalProps) =
           </DialogTitle>
           <Separator />
         </DialogHeader>
-        <VisitProvider>
-          <div className='flex gap-4'>
-            <VisitHistory customerId={customerId || 0} />
-            <VisitDetail />
-          </div>
-        </VisitProvider>
+        {customerId && <VisitTab customerId={customerId} />}
       </DialogContent>
     </Dialog>
   );

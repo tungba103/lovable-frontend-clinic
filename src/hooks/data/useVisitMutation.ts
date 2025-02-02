@@ -27,6 +27,7 @@ export const useVisitMutation = () => {
 
   const updateMutation = useMutation({
     mutationFn: async (params: { visitId: number; data: UpdateVisitRequest }) => {
+      console.log('params', params);
       return updateVisit(params.visitId, params.data);
     },
     onSuccess: async () => {
