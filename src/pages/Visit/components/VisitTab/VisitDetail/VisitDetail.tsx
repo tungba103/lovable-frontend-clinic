@@ -129,6 +129,7 @@ const VisitDetail = () => {
           <AsyncButton
             isLoading={updateMutation.isPending}
             onClick={() => form.handleSubmit(onSubmit)}
+            disabled={isDisabled}
             className='w-40'
           >
             <span>Hoàn tất lượt khám</span>

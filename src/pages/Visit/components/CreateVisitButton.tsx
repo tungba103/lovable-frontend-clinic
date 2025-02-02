@@ -86,6 +86,7 @@ const CreateVisitButton = () => {
           existingCustomerForm.reset();
           newCustomerForm.reset();
         }}
+        onInteractOutside={(e) => e.preventDefault()}
       >
         <DialogHeader>
           <DialogTitle className='mb-8'>

@@ -5,6 +5,8 @@ import { existingVisitFormSchema } from '@/validations/VisitSchema';
 import { z } from 'zod';
 import { useListCustomers } from '@/hooks/data/useListCustomers';
 import AsyncButton from '@/components/AsyncButton';
+import { Combobox } from '@/components/RHFInput/Combobox';
+import { Customer } from '@/types/api/customer';
 
 type ExistingCustomerVisitFormProps = {
   form: UseFormReturn<z.infer<typeof existingVisitFormSchema>>;
@@ -14,8 +16,6 @@ type ExistingCustomerVisitFormProps = {
 };
 
 const ExistingCustomerVisitForm = ({ form, onSubmit, onCancel, isLoading }: ExistingCustomerVisitFormProps) => {
-  const { customers } = useListCustomers();
-
   return (
     <Form {...form}>
       <form
@@ -29,22 +29,21 @@ const ExistingCustomerVisitForm = ({ form, onSubmit, onCancel, isLoading }: Exis
             <FormItem>
               <FormLabel>Bệnh nhi</FormLabel>
               <FormControl>
-                <select
-                  className='w-full p-2 border rounded-md'
-                  {...field}
-                  value={field.value || ''}
-                  onChange={(e) => field.onChange(Number(e.target.value))}
-                >
-                  <option value=''>Chọn bệnh nhi</option>
-                  {customers?.map((customer) => (
-                    <option
-                      key={customer.id}
-                      value={customer.id}
-                    >
-                      {customer.name} - {customer.parentPhone}
-                    </option>
-                  ))}
-                </select>
+                <Combobox
+                  useListData={useListCustomers}
+                  mapDataToItems={(customers: Customer[]) =>
+                    customers?.map((customer: Customer) => {
+                      return {
+                        key: customer.id.toString(),
+                        value: customer.id,
+                        label: `${customer.name} - ${customer.parentPhone}`,
+                      };
+                    })
+                  }
+                  value={field.value}
+                  onChange={field.onChange}
+                  placeholder='Chọn bệnh nhi'
+                />
               </FormControl>
             </FormItem>
           )}

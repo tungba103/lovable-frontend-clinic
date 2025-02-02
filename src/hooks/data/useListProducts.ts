@@ -40,7 +40,7 @@ export const useListProducts = () => {
   });
 
   return { 
-    products: data?.products,
+    data: data?.products,
     pagination: data?.pagination,
     isLoading,
   };

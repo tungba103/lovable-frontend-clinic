@@ -1,15 +1,15 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { UseFormReturn } from 'react-hook-form';
 import { visitDetailSchema } from '@/validations/VisitDetailSchema';
 import { z } from 'zod';
 import { CircleX } from 'lucide-react';
 import { useListServices } from '@/hooks/data/useListServices';
-import { useState } from 'react';
 import { ServiceUsageItem } from '@/types/api/visit';
 import { Skeleton } from '@/components/ui/skeleton';
+import { Combobox } from '@/components/RHFInput/Combobox';
+import { Service } from '@/types/api/service';
 
 type ServiceFormProps = {
   form: UseFormReturn<z.infer<typeof visitDetailSchema>>;
@@ -18,27 +18,20 @@ type ServiceFormProps = {
 };
 
 const ServiceForm = ({ form, isLoading, disabled }: ServiceFormProps) => {
-  const { services } = useListServices();
-  const [selectedServiceId, setSelectedServiceId] = useState<string>('');
-
-  const addServiceItem = () => {
-    if (!selectedServiceId) return;
-
-    const service = services?.find((s) => s.id === Number(selectedServiceId));
-    if (!service) return;
+  const addServiceItem = (selectedService: Service) => {
+    if (!selectedService) return;
 
     const newItem: ServiceUsageItem = {
-      serviceId: service.id,
-      serviceName: service.name,
+      serviceId: selectedService.id,
+      serviceName: selectedService.name,
       quantity: 1,
-      price: service.price,
+      price: selectedService.price,
       discount: 0,
     };
 
     const currentItems = form.getValues('serviceUsage.serviceUsageItems') || [];
     form.setValue('serviceUsage.serviceUsageItems', [...currentItems, newItem]);
     updateServiceTotalAmount();
-    setSelectedServiceId('');
   };
 
   const removeServiceItem = (index: number) => {
@@ -71,32 +64,23 @@ const ServiceForm = ({ form, isLoading, disabled }: ServiceFormProps) => {
       <CardContent>
         <div className='space-y-4'>
           <div className='flex gap-4'>
-            <div className='w-96'>
-              <Label>Chọn dịch vụ</Label>
-              <select
-                className={`w-full border rounded-md p-2 ${disabled && 'text-slate-300'}`}
-                value={selectedServiceId}
-                onChange={(e) => setSelectedServiceId(e.target.value)}
+            <div className='w-96 flex items-center gap-2'>
+              <Combobox
                 disabled={disabled}
-              >
-                <option value=''>Chọn dịch vụ...</option>
-                {services?.map((service) => (
-                  <option
-                    key={service.id}
-                    value={service.id}
-                  >
-                    {service.name}
-                  </option>
-                ))}
-              </select>
+                useListData={useListServices}
+                mapDataToItems={(services: Service[]) =>
+                  services?.map((service: Service) => {
+                    return {
+                      key: service.id.toString(),
+                      value: service,
+                      label: `${service.name} - ${service.price}`,
+                    };
+                  })
+                }
+                onChange={(value) => addServiceItem(value)}
+                placeholder='Tìm kiếm dịch vụ...'
+              />
             </div>
-            <Button
-              className='self-end'
-              onClick={addServiceItem}
-              disabled={!selectedServiceId || disabled}
-            >
-              Thêm dịch vụ
-            </Button>
           </div>
 
           <div className='border rounded-md'>

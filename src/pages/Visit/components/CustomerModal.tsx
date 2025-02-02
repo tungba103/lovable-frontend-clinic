@@ -17,7 +17,7 @@ const CustomerModal = ({ open, onOpenChange, customerId }: CustomerModalProps) =
     return <div>Loading...</div>;
   }
 
-  console.log('CustomerModal');
+  // console.log('CustomerModal');
 
   return (
     <Dialog

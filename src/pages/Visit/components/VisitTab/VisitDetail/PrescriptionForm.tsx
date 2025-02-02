@@ -1,15 +1,15 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { UseFormReturn } from 'react-hook-form';
 import { visitDetailSchema } from '@/validations/VisitDetailSchema';
 import { z } from 'zod';
 import { CircleX } from 'lucide-react';
 import { useListProducts } from '@/hooks/data/useListProducts';
-import { useState } from 'react';
 import { PrescriptionItem } from '@/types/api/visit';
 import { Skeleton } from '@/components/ui/skeleton';
+import { Combobox } from '@/components/RHFInput/Combobox';
+import { Product } from '@/types/api/product';
 
 type PrescriptionFormProps = {
   form: UseFormReturn<z.infer<typeof visitDetailSchema>>;
@@ -18,20 +18,17 @@ type PrescriptionFormProps = {
 };
 
 const PrescriptionForm = ({ form, isLoading, disabled }: PrescriptionFormProps) => {
-  const { products } = useListProducts();
-  const [selectedProductId, setSelectedProductId] = useState<string>('');
+  // const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
 
-  const addPrescriptionItem = () => {
-    if (!selectedProductId) return;
-
-    const product = products?.find((p) => p.id === Number(selectedProductId));
-    if (!product) return;
+  const addPrescriptionItem = (selectedProduct: Product) => {
+    console.log('selectedProduct', selectedProduct);
+    if (!selectedProduct) return;
 
     const newItem: PrescriptionItem = {
-      productId: product.id,
-      productName: product.name,
+      productId: selectedProduct?.id ?? 0,
+      productName: selectedProduct?.name ?? '',
       quantity: 1,
-      price: product.price,
+      price: selectedProduct?.price ?? 0,
       discount: 0,
       morningDosage: 0,
       noonDosage: 0,
@@ -44,7 +41,7 @@ const PrescriptionForm = ({ form, isLoading, disabled }: PrescriptionFormProps) 
     const currentItems = form.getValues('prescription.prescriptionItems') || [];
     form.setValue('prescription.prescriptionItems', [...currentItems, newItem]);
     updateTotalAmount();
-    setSelectedProductId('');
+    // setSelectedProduct(null);
   };
 
   const removePrescriptionItem = (index: number) => {
@@ -77,32 +74,32 @@ const PrescriptionForm = ({ form, isLoading, disabled }: PrescriptionFormProps) 
       <CardContent>
         <div className='space-y-4'>
           <div className='flex gap-4'>
-            <div className='w-96'>
-              <Label>Chọn thuốc</Label>
-              <select
+            <div className='w-96 flex items-center gap-2'>
+              {/* <Label className='w-28'>Chọn thuốc</Label> */}
+              <Combobox
                 disabled={disabled}
-                className={`w-full border rounded-md p-2 ${disabled && 'text-slate-300'}`}
-                value={selectedProductId}
-                onChange={(e) => setSelectedProductId(e.target.value)}
-              >
-                <option value=''>Chọn thuốc...</option>
-                {products?.map((product) => (
-                  <option
-                    key={product.id}
-                    value={product.id}
-                  >
-                    {product.name}
-                  </option>
-                ))}
-              </select>
+                useListData={useListProducts}
+                mapDataToItems={(products: Product[]) =>
+                  products?.map((product: Product) => {
+                    return {
+                      key: product.id.toString(),
+                      value: product,
+                      label: `${product.name} - ${product.price}`,
+                    };
+                  })
+                }
+                // value={selectedProduct}
+                onChange={(value) => addPrescriptionItem(value)}
+                placeholder='Tìm kiếm thuốc...'
+              />
             </div>
-            <Button
+            {/* <Button
               className='self-end'
               onClick={addPrescriptionItem}
-              disabled={!selectedProductId || disabled}
+              disabled={!selectedProduct || disabled}
             >
               Thêm thuốc
-            </Button>
+            </Button> */}
           </div>
 
           <div className='border rounded-md'>

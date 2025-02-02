@@ -40,7 +40,7 @@ export const useListServices = () => {
   });
 
   return { 
-    services: data?.services,
+    data: data?.services,
     pagination: data?.pagination,
     isLoading,
   };

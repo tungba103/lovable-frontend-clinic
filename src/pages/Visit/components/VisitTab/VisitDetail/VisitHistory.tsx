@@ -14,13 +14,12 @@ const VisitHistory = ({ customerId }: VisitHistoryProps) => {
 
   // Set the first visit as default when visits are loaded
   useEffect(() => {
-    // console.log('[VisitHistory] Set default visit', isLoading);
+    console.log('[VisitHistory] Set default visit', isLoading);
     if (isLoading) return;
     setSelectedVisitId(customerVisits?.[0]?.id || null);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isLoading]);
+  }, [isLoading, customerVisits, setSelectedVisitId]);
 
-  // console.log('[VisitHistory] ----------------------');
+  console.log('[VisitHistory] ----------------------');
 
   return (
     <div className='w-96 rounded-lg'>

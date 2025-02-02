@@ -5,10 +5,21 @@ import { getListCustomers } from "@/services/api/customer";
 import useQueryString from "../useQueryString";
 import { useEffect } from "react";
 
-export const useListCustomers = () => {
+interface UseListCustomersProps {
+  page?: string;
+  pageSize?: string;
+  search?: string;
+  useQueryString?: boolean;
+}
+
+export const useListCustomers = ({ page: pageParam = '1', pageSize: pageSizeParam = '10', search: searchParam, useQueryString: useQueryStringParam = true }: UseListCustomersProps = {}) => {
   const { queryString, setQueryString } = useQueryString();
 
   const { page, pageSize, search } = queryString;
+
+  const pageQuery = pageParam || page;
+  const pageSizeQuery = pageSizeParam || pageSize;
+  const searchQuery = searchParam || search;
 
   const parseData = (data: BaseListDataResponse<Customer>) => {
     const { data: queryCustomers, page, pageSize, total, totalPage } = data.result;
@@ -28,20 +39,22 @@ export const useListCustomers = () => {
   }
 
   useEffect(() => {
-    if(!page && !pageSize) {
-      setQueryString({ page: '1', pageSize: '10'});
+    if(useQueryStringParam) {
+      if(!pageQuery && !pageSizeQuery) {
+        setQueryString({ page: '1', pageSize: '10'});
+      }
     }
-  }, [setQueryString,page, pageSize]);
+  }, [setQueryString,pageQuery, pageSizeQuery, useQueryStringParam]);
   
   const { data, isLoading } = useQuery({
-    queryKey: ['customers', page, pageSize, search],
-    queryFn: () => getListCustomers({ page: page, pageSize: pageSize, search: search }),
+    queryKey: ['customers', pageQuery, pageSizeQuery, searchQuery],
+    queryFn: () => getListCustomers({ page: pageQuery, pageSize: pageSizeQuery, search: searchQuery }),
     select: (data) => parseData(data.data),
-    enabled: !!page && !!pageSize,
+    enabled: !!pageQuery && !!pageSizeQuery,
   });
 
   return { 
-    customers: data?.customers,
+    data: data?.customers,
     pagination: data?.pagination,
 
     isLoading,
