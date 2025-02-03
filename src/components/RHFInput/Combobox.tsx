@@ -4,7 +4,7 @@ import { Check, ChevronsUpDown } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Popover, PopoverTrigger } from '@/components/ui/popover';
 
 interface ComboboxItem {
   key: string;
@@ -73,6 +73,7 @@ export function Combobox({
   // Handle item selection
   const handleSelect = React.useCallback(
     (itemValue: any) => {
+      console.log('itemValue', itemValue);
       onChange(itemValue);
       setOpen(false);
     },
@@ -86,51 +87,60 @@ export function Combobox({
       open={open}
       onOpenChange={setOpen}
     >
-      <PopoverTrigger asChild>
-        <Button
-          variant='outline'
-          disabled={disabled}
-          role='combobox'
-          aria-expanded={open}
-          className={cn('w-full justify-between', className)}
-        >
-          {selectedLabel || placeholder}
-          <ChevronsUpDown className='ml-2 h-4 w-4 shrink-0 opacity-50' />
-        </Button>
-      </PopoverTrigger>
-      <PopoverContent className='w-full p-0'>
-        <Command
-          shouldFilter={false}
-          className='min-w-[400px]'
-        >
-          <CommandInput
-            placeholder={searchPlaceholder}
-            value={search}
-            onValueChange={(val) => setSearch(val)}
-            className='h-9'
-          />
-          <CommandList>
-            {isLoading ? (
-              <CommandEmpty>Loading...</CommandEmpty>
-            ) : items.length === 0 ? (
-              <CommandEmpty>{emptyText}</CommandEmpty>
-            ) : (
-              <CommandGroup>
-                {items.map((item) => (
-                  <CommandItem
-                    key={item.key}
-                    // value={String(item.value)}
-                    onSelect={() => handleSelect(item.value)}
-                  >
-                    {item.label}
-                    <Check className={cn('ml-auto h-4 w-4', value === item.value ? 'opacity-100' : 'opacity-0')} />
-                  </CommandItem>
-                ))}
-              </CommandGroup>
+      <div className='space-y-2'>
+        <PopoverTrigger asChild>
+          <Button
+            variant='outline'
+            disabled={disabled}
+            role='combobox'
+            aria-expanded={open}
+            className={cn('w-full justify-between', className)}
+          >
+            {selectedLabel || placeholder}
+            <ChevronsUpDown className='ml-2 h-4 w-4 shrink-0 opacity-50' />
+          </Button>
+        </PopoverTrigger>
+        <div className='relative'>
+          <div
+            className={cn(
+              'w-full min-w-[400px]',
+              open ? 'block' : 'hidden',
+              'absolute top-0 left-0 border-2 rounded-lg z-50'
             )}
-          </CommandList>
-        </Command>
-      </PopoverContent>
+          >
+            <Command shouldFilter={false}>
+              <CommandInput
+                placeholder={searchPlaceholder}
+                value={search}
+                onValueChange={(val) => setSearch(val)}
+                className='h-9'
+                autoFocus
+              />
+              <CommandList>
+                {isLoading ? (
+                  <CommandEmpty>Loading...</CommandEmpty>
+                ) : items.length === 0 ? (
+                  <CommandEmpty>{emptyText}</CommandEmpty>
+                ) : (
+                  <CommandGroup>
+                    {items.map((item) => (
+                      <CommandItem
+                        key={item.key}
+                        // value={String(item.value)}
+                        onSelect={() => handleSelect(item.value)}
+                        className='cursor-pointer'
+                      >
+                        {item.label}
+                        <Check className={cn('ml-auto h-4 w-4', value === item.value ? 'opacity-100' : 'opacity-0')} />
+                      </CommandItem>
+                    ))}
+                  </CommandGroup>
+                )}
+              </CommandList>
+            </Command>
+          </div>
+        </div>
+      </div>
     </Popover>
   );
 }

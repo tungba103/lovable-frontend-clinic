@@ -19,22 +19,24 @@ const CustomDateInput: React.FC<CustomDateInputProps> = ({ value, onChange, disa
 
   // Local state to handle input value
   const [inputValue, setInputValue] = useState(formatDateToString(value));
+  const [isUserEditing, setIsUserEditing] = useState(false);
+  const [lastLength, setLastLength] = useState(inputValue.length);
 
-  // Update internal state when value prop changes
+  // Update internal state when value prop changes and user is not editing
   useEffect(() => {
-    setInputValue(formatDateToString(value));
-  }, [value]);
+    if (!isUserEditing) {
+      setInputValue(formatDateToString(value));
+      setLastLength(formatDateToString(value).length);
+    }
+  }, [value, isUserEditing]);
 
   // Parse string date to Date object
   const parseDate = (dateStr: string): Date | undefined => {
     if (!dateStr) return undefined;
-
     // Check if the input matches DD/MM/YYYY format
     const dateRegex = /^(\d{2})\/(\d{2})\/(\d{4})$/;
     const match = dateStr.match(dateRegex);
-
     if (!match) return undefined;
-
     const [, day, month, year] = match;
     const date = new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
 
@@ -47,37 +49,49 @@ const CustomDateInput: React.FC<CustomDateInputProps> = ({ value, onChange, disa
       // Validate date is within reasonable range (1970-01-01 to 100 years from now)
       const minDate = new Date(1970, 0, 1);
       const maxDate = new Date(new Date().getFullYear() + 100, 11, 31);
-
       if (date < minDate || date > maxDate) return undefined;
-
       return date;
     }
-
     return undefined;
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setIsUserEditing(true);
     let newValue = e.target.value;
+    const isDeleting = newValue.length < lastLength;
+    setLastLength(newValue.length);
 
-    // Auto-format as user types
-    if ((newValue.length === 2 || newValue.length === 5) && !newValue.endsWith('/')) {
+    // Only auto-format when adding characters, not when deleting
+    if (!isDeleting && (newValue.length === 2 || newValue.length === 5) && !newValue.endsWith('/')) {
       newValue = newValue + '/';
-      setInputValue(newValue);
-    } else {
-      setInputValue(newValue);
+      setLastLength(newValue.length);
     }
 
-    // Only parse and update parent when we have a complete valid date
-    const parsedDate = parseDate(newValue);
-    if (parsedDate || newValue === '') {
-      onChange(parsedDate);
+    setInputValue(newValue);
+
+    // Only parse and update parent when we have a complete valid date or empty string
+    if (newValue === '') {
+      onChange(undefined);
+    } else {
+      const parsedDate = parseDate(newValue);
+      if (parsedDate) {
+        onChange(parsedDate);
+      }
     }
   };
 
   const handleBlur = () => {
+    setIsUserEditing(false);
     // Reformat the date on blur to ensure consistent display
     const parsedDate = parseDate(inputValue);
-    setInputValue(formatDateToString(parsedDate));
+    if (!parsedDate && inputValue !== '') {
+      // Reset to the current value from props if invalid
+      setInputValue(formatDateToString(value));
+      setLastLength(formatDateToString(value).length);
+    } else {
+      setInputValue(formatDateToString(parsedDate));
+      setLastLength(formatDateToString(parsedDate).length);
+    }
   };
 
   return (
@@ -85,6 +99,7 @@ const CustomDateInput: React.FC<CustomDateInputProps> = ({ value, onChange, disa
       value={inputValue}
       onChange={handleInputChange}
       onBlur={handleBlur}
+      onFocus={() => setIsUserEditing(true)}
       placeholder='DD/MM/YYYY'
       className='w-full'
       disabled={disabled}
