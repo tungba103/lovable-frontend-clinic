@@ -7,7 +7,7 @@ export const customerFormSchema = z.object({
   gender: z.enum(['MALE', 'FEMALE']).refine((data) => data === 'MALE' || data === 'FEMALE', {
     message: 'Giới tính không được để trống.',
   }),
-  birthDate: z.string().date(),
+  birthDate: z.date(),
   parentName: z.string().min(0, {
     message: 'Tên phụ huynh không được để trống.',
   }),

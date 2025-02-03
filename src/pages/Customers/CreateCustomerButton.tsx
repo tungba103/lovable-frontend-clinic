@@ -26,7 +26,7 @@ const CreateCustomerButton = () => {
     const data: CreateCustomerRequest = {
       name: values.name,
       gender: values.gender,
-      birthDate: values.birthDate,
+      birthDate: values.birthDate.toISOString(),
       parentName: values.parentName,
       parentPhone: values.parentPhone,
       address: values.address,

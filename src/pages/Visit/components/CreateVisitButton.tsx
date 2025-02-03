@@ -94,12 +94,12 @@ const CreateVisitButton = () => {
             Thêm lượt khám mới
           </DialogTitle>
           <Tabs
-            defaultValue='new'
+            defaultValue='existing'
             className='w-full'
           >
             <TabsList className='grid w-full grid-cols-2'>
-              <TabsTrigger value='new'>Bệnh nhân mới</TabsTrigger>
               <TabsTrigger value='existing'>Bệnh nhân cũ</TabsTrigger>
+              <TabsTrigger value='new'>Bệnh nhân mới</TabsTrigger>
             </TabsList>
             <TabsContent value='existing'>
               <ExistingCustomerVisitForm

@@ -21,15 +21,37 @@ const UpdateCustomerModal = ({ customer }: IProps) => {
     resolver: zodResolver(customerFormSchema),
     defaultValues: {
       ...customer,
-      birthDate: new Date(customer.birthDate).toISOString().split('T')[0],
+      birthDate: new Date(customer.birthDate),
     },
   });
-  const handleSubmit = (data: UpdateCustomerRequest) => {
+  const handleSubmit = (values: z.infer<typeof customerFormSchema>) => {
+    const data: UpdateCustomerRequest = {
+      name: values.name,
+      gender: values.gender,
+      birthDate: values.birthDate.toISOString(),
+      parentName: values.parentName,
+      parentPhone: values.parentPhone,
+      address: values.address,
+    };
     updateMutation.mutate(
       { customerId: customer.id, data },
       {
         onSuccess: () => {
           setOpen(false);
+        },
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        onError: (error: any) => {
+          switch (error.response?.data?.message) {
+            case 'Name And Parent phone number already exists':
+              form.setError('name', { message: 'Bệnh nhân đã tồn tại' });
+              form.setError('parentPhone', { message: 'Số điện thoại đã tồn tại' });
+              break;
+            case 'Name And Birth Date already exists':
+              form.setError('name', { message: 'Bệnh nhân đã tồn tại' });
+              form.setError('birthDate', { message: 'Ngày sinh đã tồn tại' });
+              break;
+            default:
+          }
         },
       }
     );

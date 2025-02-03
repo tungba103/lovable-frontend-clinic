@@ -5,6 +5,7 @@ import { UseFormReturn } from 'react-hook-form';
 import { z } from 'zod';
 import { visitDetailSchema } from '@/validations/VisitDetailSchema';
 import { Skeleton } from '@/components/ui/skeleton';
+import CustomDateInput from '@/components/RHFInput/DateInput';
 
 interface FollowUpCardProps {
   form: UseFormReturn<z.infer<typeof visitDetailSchema>>;
@@ -13,6 +14,8 @@ interface FollowUpCardProps {
 }
 
 const FollowUpCard = ({ form, isLoading, disabled }: FollowUpCardProps) => {
+  console.log('form', form.getValues('reExaminationTime'));
+
   return (
     <Card>
       <CardHeader>
@@ -20,27 +23,29 @@ const FollowUpCard = ({ form, isLoading, disabled }: FollowUpCardProps) => {
       </CardHeader>
       <CardContent>
         <div className='flex justify-start gap-4'>
-          <div className='w-96'>
+          <div className='w-96 flex flex-col gap-2'>
             <Label>Ngày tái khám</Label>
             {isLoading ? (
               <Skeleton className='h-10 w-full' />
             ) : (
-              <Input
-                className='my-2'
-                placeholder='Ngày tái khám'
-                type='date'
-                disabled={disabled}
+              <CustomDateInput
                 {...form.register('reExaminationTime')}
+                value={form.getValues('reExaminationTime')}
+                onChange={(date) => {
+                  form.resetField('reExaminationTime', {
+                    defaultValue: date,
+                  });
+                }}
+                disabled={disabled}
               />
             )}
           </div>
-          <div className='w-96'>
+          <div className='w-96 flex flex-col gap-2'>
             <Label>Lời dặn</Label>
             {isLoading ? (
               <Skeleton className='h-10 w-full' />
             ) : (
               <Input
-                className='my-2'
                 placeholder='Lời dặn'
                 {...form.register('advice')}
                 disabled={disabled}

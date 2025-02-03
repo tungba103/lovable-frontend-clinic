@@ -37,7 +37,7 @@ export const visitDetailSchema = z.object({
       doctorNotes: z.string().optional(),
     })),
   }),
-  reExaminationTime: z.string().optional(),
+  reExaminationTime: z.date().optional(),
   advice: z.string().optional(),
   status: z.enum(['NEW', 'IN_PROGRESS', 'COMPLETED', 'CANCELLED']).optional(),
 }); 

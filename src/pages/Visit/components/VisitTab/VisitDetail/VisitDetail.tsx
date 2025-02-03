@@ -35,6 +35,7 @@ const VisitDetail = () => {
       visitId: selectedVisitId,
       data: {
         ...data,
+        reExaminationTime: data.reExaminationTime ? data.reExaminationTime.toISOString() : '',
         status: VisitStatus.COMPLETED,
         prescription: {
           ...data.prescription,
@@ -59,6 +60,7 @@ const VisitDetail = () => {
       },
     };
 
+    console.log('body', body);
     updateMutation.mutate(body, {
       onSuccess: async () => {
         closeCustomerModal();
@@ -82,7 +84,7 @@ const VisitDetail = () => {
         totalDiscount: visit?.serviceUsage?.totalDiscount || 0,
         serviceUsageItems: visit?.serviceUsage?.serviceUsageItems || [],
       },
-      reExaminationTime: visit?.reExaminationTime ? new Date(visit?.reExaminationTime).toISOString().split('T')[0] : '',
+      reExaminationTime: visit?.reExaminationTime ? new Date(visit?.reExaminationTime) : undefined,
       advice: visit?.advice || '',
     });
   }, [form, visit]);

@@ -24,8 +24,18 @@ export const useCustomerMutation = () => {
       toast.success('Tạo khách hàng thành công');
 
     },
-    onError: (err) => {
-      toast.error('Bệnh nhân đã tồn tại');
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    onError: (err: any) => {
+      switch (err.response?.data?.message) {
+        case 'Name And Parent phone number already exists':
+          toast.error('Bệnh nhân đã tồn tại');
+          break;
+        case 'Name And Birth Date already exists':
+          toast.error('Bệnh nhân đã tồn tại');
+          break;
+        default:
+          toast.error('Tạo khách hàng thất bại');
+      }
       console.warn(err);
     },
   });
@@ -40,8 +50,18 @@ export const useCustomerMutation = () => {
 
       toast.success('Cập nhật khách hàng thành công');
     },
-    onError: (err) => {
-      toast.error('Cập nhật khách hàng thất bại');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    onError: (err: any) => {
+      switch (err.response?.data?.message) {
+        case 'Name And Parent phone number already exists':
+          toast.error('Bệnh nhân đã tồn tại');
+          break;
+        case 'Name And Birth Date already exists':
+          toast.error('Bệnh nhân đã tồn tại');
+          break;
+        default:
+          toast.error('Cập nhật khách hàng thất bại');
+      }
       console.warn(err);
     },
   });
