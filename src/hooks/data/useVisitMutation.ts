@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { createVisit, updateVisit } from '@/services/api/visit';
+import { cancelVisit, createVisit, updateVisit } from '@/services/api/visit';
 import useQueryString from '../useQueryString';
 import { CreateVisitRequest, UpdateVisitRequest } from '@/types/api/visit';
 import { toast } from 'react-toastify';
@@ -42,8 +42,25 @@ export const useVisitMutation = () => {
     },
   });
 
+  const cancelMutation = useMutation({
+    mutationFn: async (visitId: number) => {
+      return cancelVisit(visitId);
+    },
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({
+        queryKey: ['visits', page, pageSize, search],
+      });
+      toast.success('Hủy lượt khám thành công');
+    },
+    onError: (err) => {
+      toast.error('Hủy lượt khám thất bại');
+      console.warn(err);
+    },
+  });
+
   return {
     createMutation,
     updateMutation,
+    cancelMutation,
   };
 }; 

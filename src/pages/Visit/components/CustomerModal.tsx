@@ -49,12 +49,8 @@ const CustomerModal = ({ open, onOpenChange, customerId }: CustomerModalProps) =
       <DialogContent className='max-w-full h-screen'>
         <DialogHeader>
           <DialogTitle className='mb-2 flex justify-start items-center'>
-            <span>
-              {customer?.name} | {customer?.parentPhone} | {customer?.gender === 'MALE' ? 'Nam' : 'Nữ'} |{' '}
-              {customer?.birthDate ? customFormatDate(new Date(customer?.birthDate)) : ''} |
-            </span>
             <AsyncButton
-              className='ml-2'
+              className='mr-2'
               size='sm'
               onClick={handleCreateVisit}
               isLoading={createVisitMutation.isPending}
@@ -62,6 +58,14 @@ const CustomerModal = ({ open, onOpenChange, customerId }: CustomerModalProps) =
               <Plus />
               <span>Thêm lượt khám mới</span>
             </AsyncButton>
+            <span>
+              | {customer?.name} | {customer?.gender === 'MALE' ? 'Nam' : 'Nữ'} | {customer?.address} |{' '}
+              {customer?.birthDate
+                ? `${customFormatDate(new Date(customer?.birthDate))} (${
+                    new Date().getFullYear() - new Date(customer?.birthDate).getFullYear()
+                  } tuổi)`
+                : ''}
+            </span>
           </DialogTitle>
           <Separator />
         </DialogHeader>

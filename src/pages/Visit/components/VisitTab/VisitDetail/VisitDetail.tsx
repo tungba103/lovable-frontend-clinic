@@ -107,7 +107,7 @@ const VisitDetail = () => {
       </p>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className='space-y-4 h-[80vh] overflow-y-scroll'
+        className='space-y-4 h-[75vh] overflow-y-scroll'
       >
         <DoctorInformationCard
           form={form}

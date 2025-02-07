@@ -5,6 +5,7 @@ import { UseFormReturn } from 'react-hook-form';
 import { newCustomerVisitFormSchema } from '@/validations/VisitSchema';
 import { z } from 'zod';
 import AsyncButton from '@/components/AsyncButton';
+import CustomDateInput from '@/components/RHFInput/DateInput';
 
 type NewCustomerVisitFormProps = {
   form: UseFormReturn<z.infer<typeof newCustomerVisitFormSchema>>;
@@ -60,9 +61,9 @@ const NewCustomerVisitForm = ({ form, onSubmit, onCancel, isLoading }: NewCustom
             <FormItem>
               <FormLabel>Ngày sinh</FormLabel>
               <FormControl>
-                <Input
-                  type='date'
-                  {...field}
+                <CustomDateInput
+                  value={field.value}
+                  onChange={field.onChange}
                 />
               </FormControl>
             </FormItem>

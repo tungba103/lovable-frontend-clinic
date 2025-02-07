@@ -97,7 +97,7 @@ const PrescriptionForm = ({ form, isLoading, disabled }: PrescriptionFormProps) 
                     return {
                       key: product.id.toString(),
                       value: product,
-                      label: `${product.name} - ${product.price}`,
+                      label: `${product.name} - ${product.price.toLocaleString('vi-VN')} VND`,
                     };
                   })
                 }

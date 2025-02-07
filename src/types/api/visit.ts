@@ -12,6 +12,7 @@ export interface Visit {
   customer: Customer;
   status: VisitStatus;
   totalAmount: number;
+  totalDiscount: number;
   
   creatorId: number;
   creatorName: string;

@@ -9,6 +9,7 @@ const AsyncButton = ({
   className,
   disabled,
   size,
+  variant,
 }: {
   children: React.ReactNode;
   onClick: () => void;
@@ -16,6 +17,7 @@ const AsyncButton = ({
   className?: string;
   disabled?: boolean;
   size?: ButtonProps['size'];
+  variant?: ButtonProps['variant'];
 }) => {
   return (
     <Button
@@ -23,6 +25,7 @@ const AsyncButton = ({
       disabled={isLoading || disabled}
       className={cn('min-w-14', className)}
       size={size}
+      variant={variant}
     >
       {isLoading ? <Loader2 className='w-6 h-4 animate-spin' /> : children}
     </Button>

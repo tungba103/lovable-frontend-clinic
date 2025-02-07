@@ -83,7 +83,7 @@ const ServiceForm = ({ form, isLoading, disabled }: ServiceFormProps) => {
                     return {
                       key: service.id.toString(),
                       value: service,
-                      label: `${service.name} - ${service.price}`,
+                      label: `${service.name} - ${service.price.toLocaleString('vi-VN')} VND`,
                     };
                   })
                 }

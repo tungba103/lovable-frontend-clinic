@@ -40,3 +40,8 @@ export const updateVisit = (visitId: number, data: UpdateVisitRequest) => authAp
   url: `/visits/${visitId}`,
   data,
 });
+
+export const cancelVisit = (visitId: number) => authApi<BaseDataResponse<Visit>>({
+  method: 'DELETE',
+  url: `/visits/${visitId}`,
+});

@@ -7,6 +7,8 @@ import { Badge } from '@/components/ui/badge';
 import { useCustomerModal } from '@/contexts/CustomerModal/CustomerModalContext';
 import TableLoading from '@/components/Table/TableLoading';
 import TableEmpty from '@/components/Table/TableEmpty';
+import CancelVisitModal from './components/CancelVisitModal';
+import { VisitStatus } from '@/types/api/visit';
 
 const VisitStatusSettings = {
   NEW: {
@@ -90,6 +92,11 @@ const VisitsPage = () => {
                   </TableCell>
                   <TableCell>{visit.creatorName}</TableCell>
                   <TableCell>{new Date(visit.createdAt).toLocaleDateString('vi-VN')}</TableCell>
+                  <TableCell onClick={(e) => e.stopPropagation()}>
+                    {![VisitStatus.CANCELLED, VisitStatus.COMPLETED].includes(visit.status) && (
+                      <CancelVisitModal visitId={visit.id} />
+                    )}
+                  </TableCell>
                 </TableRow>
               ))}
             </TableBody>

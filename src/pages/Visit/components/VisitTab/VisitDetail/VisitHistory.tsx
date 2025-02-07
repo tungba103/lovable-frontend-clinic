@@ -54,7 +54,9 @@ const VisitHistory = ({ customerId }: VisitHistoryProps) => {
               >
                 <td className='p-2'>{customFormatDate(new Date(visit.createdAt))}</td>
                 <td className='p-2'>{visit.creatorName || 'N/A'}</td>
-                <td className='p-2'>{visit.totalAmount?.toLocaleString('vi-VN') || 0} VND</td>
+                <td className='p-2'>
+                  {((visit?.totalAmount || 0) - (visit?.totalDiscount || 0)).toLocaleString('vi-VN') || 0} VND
+                </td>
               </tr>
             ))}
           </tbody>
